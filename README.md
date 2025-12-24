@@ -1,4 +1,5 @@
 # LLM Lab
+https://github.com/99-antennas/llm-lab/blob/main/README.md (public)
 
 # Requirements 
 - OLLAMA enables open source models to run on CPUs (ie. your laptop)
@@ -23,11 +24,11 @@ LLM LAB – QUICK START
 # Startup
 On subsequent usage just run the following line in the terminal: 
    - macOS/Linux: scripts/start_webui.sh
-   - Windows: scripts/start_webui.ps1
+   - Windows: powershell -ExecutionPolicy Bypass -File ./scripts/start_webui.ps1
 
 # Shutdown
    - macOS/Linux: scripts/stop_webui.sh
-   - Windows: scripts/stop_webui.ps1
+   - Windows: powershell -ExecutionPolicy Bypass -File ./scripts/stop_webui.ps1
 
    This stops the container but preserves all data (users, prompts, chats) stored in the `open-webui-data` Docker volume.
 
