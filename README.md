@@ -1,5 +1,25 @@
 # LLM Lab
 
+# Requirements 
+- OLLAMA enables open source models to run on CPUs (ie. your laptop)
+- WEBUI a basic chat server that enables chat features with the local models.
+  (docker container)
+
+# SETUP 
+
+LLM LAB – QUICK START
+
+1. Install Ollama: https://ollama.com
+2. Install Docker: https://www.docker.com/products/docker-desktop/
+3. Run the setup script for your OS:
+   - macOS/Linux: scripts/setup_models.sh
+   - Windows: scripts/setup_models.ps1
+4. Start Open WebUI (see scripts/start_webui.*)
+5. Open browser to http://localhost:3000
+
+This lab is designed to feel identical across machines.
+
+
 ## Admin settings enabled by default
 
 This kit starts Open WebUI with:
