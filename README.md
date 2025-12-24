@@ -5,21 +5,33 @@
 - WEBUI a basic chat server that enables chat features with the local models.
   (docker container)
 
-# SETUP 
+# Installation
 
 LLM LAB – QUICK START
 
 1. Install Ollama: https://ollama.com
 2. Install Docker: https://www.docker.com/products/docker-desktop/
-3. Run the setup script for your OS:
+3. Run the setup script for your OS in the terminal:
    - macOS/Linux: scripts/setup_models.sh
    - Windows: scripts/setup_models.ps1
-4. Start Open WebUI (see scripts/start_webui.*)
+4. Start Open WebUI 
+   - macOS/Linux: scripts/start_webui.sh
+   - Windows: scripts/start_webui.ps1
 5. Open browser to http://localhost:3000
 
-This lab is designed to feel identical across machines.
 
+# Startup
+On subsequent usage just run the following line in the terminal: 
+   - macOS/Linux: scripts/start_webui.sh
+   - Windows: scripts/start_webui.ps1
 
+# Shutdown
+   - macOS/Linux: scripts/stop_webui.sh
+   - Windows: scripts/stop_webui.ps1
+
+   This stops the container but preserves all data (users, prompts, chats) stored in the `open-webui-data` Docker volume.
+
+# Additional Settings
 ## Admin settings enabled by default
 
 This kit starts Open WebUI with:
@@ -65,19 +77,6 @@ Edit as Administrator:
 Add:
 
 `127.0.0.1   llm-lab`
-
-## Stopping Open WebUI
-
-macOS/Linux:
-
-`scripts/stop_webui.sh`
-
-Windows (PowerShell):
-
-`scripts\stop_webui.ps1`
-
-This stops the container but preserves all data (users, prompts, chats) stored in the `open-webui-data` Docker volume.
-
 
 ### macOS / Linux
 
