@@ -1,0 +1,39 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows system files
+Thumbs.db
+
+# Editor/IDE settings (keep repo clean)
+.vscode/
+.idea/
+*.code-workspace
+
+# Environment and secrets
+.env
+.env.*
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+.tmp/
+
+# Model binaries (avoid committing large files)
+models/*.gguf
+models/*.bin
+models/*.safetensors
+models/*.onnx
+models/*.pt
+models/*.ckpt
+models/*.tar
+models/*.zip
+models/*.gz
+models/*.tgz
+
+# Node / Python cache
+node_modules/
+__pycache__/
+*.pyc
