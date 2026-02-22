@@ -33,6 +33,25 @@ On subsequent usage just run the following line in the terminal:
    This stops the container but preserves all data (users, prompts, chats) stored in the `open-webui-data` Docker volume.
 
 # Additional Settings
+## Configuration and Secrets
+
+- Non-secret runtime config belongs in `.env` (see `.env.example`).
+- Secret values must stay in 1Password and be referenced with `op://...` URIs.
+- Set `*_REF` variables in `.env`, then resolve secrets at runtime with `op read`.
+
+Example:
+
+```env
+SUPPORT_EMAIL=you@example.com
+GITHUB_REPO=your-org/your-repo
+EXTERNAL_API_KEY_REF=op://HomeAgent/ExternalApi/key
+```
+
+Project config files:
+
+- `config/skills.yaml` for skill-level toggles/settings
+- `config/apps.yaml` for app integration toggles/settings
+
 ## Admin settings enabled by default
 
 This kit starts Open WebUI with:
