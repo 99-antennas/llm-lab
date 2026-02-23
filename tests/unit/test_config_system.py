@@ -7,34 +7,67 @@ from apps.api.core.config import (
     load_app_configs,
     load_skill_configs,
 )
+from clients.config_manager import ConfigManager, ConfigManagerError
 
 
 def test_settings_load_from_env(monkeypatch):
     monkeypatch.setenv("APP_ENV", "test")
     monkeypatch.setenv("APP_NAME", "home-agent-test")
     monkeypatch.setenv("SUPPORT_EMAIL", "ops@example.com")
-    monkeypatch.setenv("GITHUB_REPO", "99-antennas/llm-lab")
 
     settings = Settings()
 
     assert settings.app_env == "test"
     assert settings.app_name == "home-agent-test"
     assert settings.support_email == "ops@example.com"
-    assert settings.github_repo == "99-antennas/llm-lab"
 
 
-def test_yaml_skill_and_app_configs_parse(tmp_path: Path):
-    (tmp_path / "skills.yaml").write_text(
-        "- name: approval-notifier\n  enabled: true\n",
-        encoding="utf-8",
-    )
-    (tmp_path / "apps.yaml").write_text(
-        "- name: github-poller\n  enabled: true\n",
+def test_master_config_skill_and_app_configs_parse(tmp_path: Path):
+    (tmp_path / "master_config.yaml").write_text(
+        """
+skills:
+  - name: notification
+    type: value
+    value:
+      enabled: true
+      notification_email: kas@99antennas.com
+apps:
+  - name: github_poller
+    type: value
+    value:
+      enabled: true
+      github_repo: 99-antennas/llm-lab
+""",
         encoding="utf-8",
     )
 
     skills = load_skill_configs(tmp_path)
     apps = load_app_configs(tmp_path)
 
-    assert skills["approval-notifier"] == SkillConfig(name="approval-notifier", enabled=True)
-    assert apps["github-poller"] == AppIntegrationConfig(name="github-poller", enabled=True)
+    assert skills["notification"] == SkillConfig(
+        name="notification",
+        enabled=True,
+        notification_email="kas@99antennas.com",
+    )
+    assert apps["github_poller"] == AppIntegrationConfig(
+        name="github-poller", enabled=True, github_repo="99-antennas/llm-lab"
+    )
+
+
+def test_config_manager_raises_for_missing_environment_var(tmp_path: Path):
+    (tmp_path / "master_config.yaml").write_text(
+        """
+service:
+  - name: api_key
+    type: environment
+    env_var: MISSING_API_KEY
+""",
+        encoding="utf-8",
+    )
+
+    manager = ConfigManager(config_path=tmp_path / "master_config.yaml")
+    try:
+        manager.load_service("service")
+        assert False, "expected ConfigManagerError"
+    except ConfigManagerError:
+        assert True

@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import os
-import subprocess
 from dataclasses import dataclass
+from dataclasses import field
 
 from apps.api.core.config import Settings
+from clients.secret_manager import GoogleSecretManager, SecretManagerError
 
 
 class SecretResolutionError(RuntimeError):
@@ -13,25 +14,15 @@ class SecretResolutionError(RuntimeError):
 
 @dataclass
 class SecretStore:
-    op_binary: str = "op"
+    manager: GoogleSecretManager = field(default_factory=GoogleSecretManager)
 
     def read(self, reference: str) -> str:
-        if not reference.startswith("op://"):
-            raise SecretResolutionError(
-                "Secret reference must use 1Password URI format (op://...)."
-            )
         try:
-            result = subprocess.run(
-                [self.op_binary, "read", reference],
-                check=True,
-                capture_output=True,
-                text=True,
-            )
-        except subprocess.CalledProcessError as exc:
+            return self.manager.get_secret(reference)
+        except SecretManagerError as exc:
             raise SecretResolutionError(
                 f"Unable to read secret reference: {reference}"
             ) from exc
-        return result.stdout.strip()
 
 
 @dataclass

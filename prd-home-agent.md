@@ -23,7 +23,7 @@ Build a self-hosted hybrid AI agent platform that:
 
 -   Runs on macOS initially
 -   Migrates cleanly to Linux
--   Uses 1Password as secret vault
+-   Uses Google Secret Manager as secret vault
 -   Supports:
     -   Voice push-to-talk from phone + laptop
     -   Hybrid LLM routing (Ollama + external API)
@@ -89,6 +89,26 @@ Never mix business logic into DB models.
 -   Store dependencies in `pyproject.toml` and lock with `uv.lock`.
 -   Run tests and project commands through `uv run ...`.
 -   Do not use ad-hoc global installs or unmanaged virtualenv flows.
+
+## 3.2 Clients Directory and Secret Loading
+
+-   Add a top-level `/clients` directory for third-party integrations (for
+    example: Google Cloud, Gmail, Google Drive, Google Cloud Storage, Slack).
+-   Use a master config file for project configuration (skills, apps, and
+    integration settings).
+-   Non-secret values may be stored as plain config values or environment
+    values.
+-   Secrets must be referenced as `gsm://...` and resolved through Google
+    Secret Manager.
+-   Bootstrap access uses service account credentials (`GOOGLE_CLOUD_PROJECT`,
+    `GOOGLE_APPLICATION_CREDENTIALS`) with no human sign-in on server.
+-   Required flow:
+    `config -> secret manager -> client -> instantiated client`
+-   Provide a shared Google client factory named `get_google_cloud`.
+-   Reuse the shared Google client for Google services (Secret Manager, Gmail,
+    Drive, Cloud Storage).
+-   Client instantiation must fail fast if required secrets cannot be
+    retrieved.
 
 ------------------------------------------------------------------------
 
@@ -172,10 +192,11 @@ health checks. - Log commit SHA.
 
 ------------------------------------------------------------------------
 
-# 9. Secrets Management (1Password)
+# 9. Secrets Management (Google Secret Manager)
 
--   Dedicated 1Password vault.
--   Use 1Password CLI (op inject or op read).
+-   Dedicated Google Cloud project for secrets.
+-   Use Google Secret Manager API for secret retrieval.
+-   Server secret references use `gsm://...`.
 -   No secrets committed to repo.
 -   No plaintext secret storage.
 -   Rotating secrets requires no code change.
@@ -219,7 +240,7 @@ health checks. - Log commit SHA.
 -   Replace launchd with systemd timer.
 -   No code changes required.
 
-Migration success: - Copy repo. - Configure 1Password CLI. - docker
+Migration success: - Copy repo. - Configure GCP credentials. - docker
 compose up -d. - System operational \< 30 minutes.
 
 ------------------------------------------------------------------------
@@ -232,7 +253,7 @@ compose up -d. - System operational \< 30 minutes.
 -   ≥ 3 MCP tools functional.
 -   Approval workflow enforced.
 -   Polling deploy operational.
--   1Password integration operational.
+-   Google Secret Manager integration operational.
 -   Nightly DB backup working.
 -   Test DB infra operational.
 -   No cross-user data leakage.

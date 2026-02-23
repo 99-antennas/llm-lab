@@ -1,4 +1,0 @@
-- name: github-poller
-  enabled: true
-  owner_email: ops@example.com
-  github_repo: 99-antennas/llm-lab

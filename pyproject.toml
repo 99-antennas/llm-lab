@@ -13,12 +13,17 @@ dependencies = [
   "psycopg[binary]>=3.2.0",
   "httpx>=0.27.0",
   "pyyaml>=6.0.0",
-  "pydantic-settings>=2.4.0"
+  "pydantic-settings>=2.4.0",
+  "google-cloud-secret-manager>=2.23.0",
+  "google-cloud-storage>=2.18.0",
+  "google-api-python-client>=2.154.0",
+  "google-auth>=2.36.0"
 ]
 
 [dependency-groups]
 dev = [
   "pytest>=8.3.0",
+  "ruff>=0.12.0",
 ]
 
 [build-system]
@@ -26,7 +31,7 @@ requires = ["hatchling>=1.25.0"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["apps"]
+packages = ["apps", "clients"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -3,15 +3,16 @@ from __future__ import annotations
 from functools import lru_cache
 from pathlib import Path
 
-import yaml
 from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from clients.config_manager import ConfigManager
 
 class SkillConfig(BaseModel):
     name: str
     enabled: bool = True
     description: str | None = None
+    notification_email: str | None = None
 
 
 class AppIntegrationConfig(BaseModel):
@@ -37,7 +38,7 @@ class Settings(BaseSettings):
     support_email: str | None = Field(default=None, alias="SUPPORT_EMAIL")
     github_repo: str | None = Field(default=None, alias="GITHUB_REPO")
 
-    # Secret references must point to 1Password (op://...)
+    # Secret references must point to Google Secret Manager refs (gsm://...)
     external_api_key_ref: str | None = Field(default=None, alias="EXTERNAL_API_KEY_REF")
     google_credentials_ref: str | None = Field(default=None, alias="GOOGLE_CREDENTIALS_REF")
 
@@ -48,32 +49,23 @@ class ConfigBundle(BaseModel):
     apps: dict[str, AppIntegrationConfig]
 
 
-def _load_yaml_objects(path: Path) -> list[dict]:
-    if not path.exists():
-        return []
-    content = yaml.safe_load(path.read_text(encoding="utf-8"))
-    if content is None:
-        return []
-    if not isinstance(content, list):
-        raise ValueError(f"Expected list in {path}")
-    return content
-
-
 def load_skill_configs(config_dir: Path) -> dict[str, SkillConfig]:
-    items = _load_yaml_objects(config_dir / "skills.yaml")
+    manager = ConfigManager(config_path=config_dir / "master_config.yaml")
+    items = manager.load_service("skills")
     result: dict[str, SkillConfig] = {}
-    for item in items:
-        skill = SkillConfig.model_validate(item)
-        result[skill.name] = skill
+    for name, payload in items.items():
+        skill = SkillConfig(name=name.replace("_", "-"), **payload)
+        result[name] = skill
     return result
 
 
 def load_app_configs(config_dir: Path) -> dict[str, AppIntegrationConfig]:
-    items = _load_yaml_objects(config_dir / "apps.yaml")
+    manager = ConfigManager(config_path=config_dir / "master_config.yaml")
+    items = manager.load_service("apps")
     result: dict[str, AppIntegrationConfig] = {}
-    for item in items:
-        app = AppIntegrationConfig.model_validate(item)
-        result[app.name] = app
+    for name, payload in items.items():
+        app = AppIntegrationConfig(name=name.replace("_", "-"), **payload)
+        result[name] = app
     return result
 
 

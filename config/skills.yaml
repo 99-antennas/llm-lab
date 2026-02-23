@@ -1,3 +1,0 @@
-- name: approval-notifier
-  enabled: true
-  description: Sends approval alerts to external channels.

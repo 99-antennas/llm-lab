@@ -36,21 +36,25 @@ On subsequent usage just run the following line in the terminal:
 ## Configuration and Secrets
 
 - Non-secret runtime config belongs in `.env` (see `.env.example`).
-- Secret values must stay in 1Password and be referenced with `op://...` URIs.
-- Set `*_REF` variables in `.env`, then resolve secrets at runtime with `op read`.
+- Use `config/master_config.yaml` as the master project config for skills, apps, and client settings.
+- Secret values must stay in Google Secret Manager and be referenced with `gsm://...` URIs.
+- `/clients` contains integration clients and the config/secret manager flow:
+  `config -> secret manager -> client -> get_google_cloud()`.
+- Required secrets are fetched via Google Secret Manager API and client creation fails if secret resolution fails.
+- Runtime uses Google credentials (`GOOGLE_CLOUD_PROJECT`, `GOOGLE_APPLICATION_CREDENTIALS`).
 
 Example:
 
 ```env
 SUPPORT_EMAIL=you@example.com
 GITHUB_REPO=your-org/your-repo
-EXTERNAL_API_KEY_REF=op://HomeAgent/ExternalApi/key
+EXTERNAL_API_KEY_REF=gsm://llm-lab-secrets/external-api-key/latest
 ```
 
 Project config files:
 
-- `config/skills.yaml` for skill-level toggles/settings
-- `config/apps.yaml` for app integration toggles/settings
+- `config/master_config.yaml` for project-wide service definitions
+- `docs/google-secret-manager-setup.md` for Google Secret Manager setup and secret creation
 
 ## Admin settings enabled by default
 
