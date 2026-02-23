@@ -102,7 +102,7 @@ JSON schema for `twilio-credentials`:
 1. Enable Gmail API in the same GCP project.
 2. Use a service account key in `GOOGLE_APPLICATION_CREDENTIALS`.
 3. Configure Google Workspace domain-wide delegation for the service account.
-4. Add sender mailbox secret `notification-email-from` (for example `alerts@99antennas.com`).
+4. Set sender mailbox in profile config (`profile.email_from`, for example `alerts@99antennas.com`).
 
 Then test notifications:
 

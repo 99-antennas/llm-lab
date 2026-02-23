@@ -11,17 +11,18 @@ class SecretManagerError(RuntimeError):
 class GoogleSecretManager:
     def get_secret(self, secret_ref: str) -> str:
         resource_name = self._parse_ref(secret_ref)
+        credentials_file = os.getenv("GOOGLE_CLOUD_SM_KEYFILE")
+        if not credentials_file:
+            raise SecretManagerError("Missing GOOGLE_CLOUD_SM_KEYFILE for secret retrieval")
         try:
             from google.cloud import secretmanager
+            from google.oauth2 import service_account
 
-            kwargs = {}
-            credentials_file = os.getenv("GOOGLE_CLOUD_KEYFILE")
-            if credentials_file:
-                from google.oauth2 import service_account
-
-                kwargs["credentials"] = service_account.Credentials.from_service_account_file(
+            kwargs = {
+                "credentials": service_account.Credentials.from_service_account_file(
                     credentials_file
                 )
+            }
             sm_client = secretmanager.SecretManagerServiceClient(**kwargs)
             response = sm_client.access_secret_version(name=resource_name)
             value = response.payload.data.decode("utf-8").strip()

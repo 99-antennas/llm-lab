@@ -20,7 +20,7 @@ class TwilioSecretsModel(BaseModel):
     account_sid: str
     auth_token: str
     from_number: str
-    to_number: str
+    to_number: str | None = None
 
 
 @dataclass
@@ -91,4 +91,24 @@ def get_twilio_client() -> TwilioClient:
     except (json.JSONDecodeError, ValidationError) as exc:
         raise TwilioClientError("Invalid twilio_credentials JSON payload") from exc
 
-    return TwilioClient(TwilioConfig(**model.model_dump()))
+    to_number = _get_env("APPROVAL_TO_NUMBER")
+    if not to_number:
+        try:
+            profile_cfg = ConfigManager().load_service("profile")
+            to_number = profile_cfg.get("to_number")
+        except ConfigManagerError:
+            to_number = None
+    if not to_number:
+        to_number = model.to_number
+
+    if not to_number:
+        raise TwilioClientError("Missing destination number: set profile.to_number or APPROVAL_TO_NUMBER")
+
+    return TwilioClient(
+        TwilioConfig(
+            account_sid=model.account_sid,
+            auth_token=model.auth_token,
+            from_number=model.from_number,
+            to_number=to_number,
+        )
+    )

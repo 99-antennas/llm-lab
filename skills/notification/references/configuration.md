@@ -8,9 +8,9 @@ Configure one or both channels with environment variables.
 
 ## Email (Google Workspace Gmail API)
 
-- `APPROVAL_EMAIL_TO`: destination address
-- `APPROVAL_EMAIL_FROM`: Google Workspace sender mailbox (for domain-wide delegated send)
-- `GOOGLE_APPLICATION_CREDENTIALS`: service account JSON key path
+- `profile.email_to` in `config/master_config.yaml`: destination address
+- `profile.email_from` in `config/master_config.yaml`: Google Workspace sender mailbox
+- `GOOGLE_CLOUD_KEYFILE`: service account JSON key path
 
 The notifier also loads values from `config/master_config.yaml` using the
 project config manager, where secret values are resolved via Google Secret
@@ -18,10 +18,9 @@ Manager (`gsm://...`).
 
 ## SMS (Twilio REST API)
 
-- `TWILIO_ACCOUNT_SID`: account SID
-- `TWILIO_AUTH_TOKEN`: auth token
-- `TWILIO_FROM`: Twilio phone number in E.164 format
-- `TWILIO_TO`: destination phone number in E.164 format
+- `notification.twilio_credentials` in `config/master_config.yaml` (secret): JSON payload with
+  `account_sid`, `auth_token`, `from_number`
+- `profile.to_number` in `config/master_config.yaml`: destination phone number in E.164 format
 
 ## Smoke Test
 
