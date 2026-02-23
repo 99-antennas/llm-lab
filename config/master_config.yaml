@@ -1,0 +1,67 @@
+global:
+  - name: app_env
+    type: environment
+    env_var: APP_ENV
+    default: dev
+  - name: support_email
+    type: value
+    value: kas@99antennas.com
+
+test:
+  - name: test_password
+    type: secret
+    secret_ref: gsm://projects/llm-lab-1771800794/secrets/llm-lab-test-password/versions/latest
+skills:
+  - name: notification
+    type: value
+    value:
+      enabled: true
+      notification_email: kas@99antennas.com
+
+apps:
+  - name: github_poller
+    type: value
+    value:
+      enabled: true
+      github_repo: 99-antennas/llm-lab
+
+notification:
+  - name: email_to
+    type: value
+    value: kas@99antennas.com
+  - name: email_from
+    type: secret
+    secret_ref: gsm://projects/llm-lab-1771800794/secrets/notification-email-from/versions/latest
+  - name: twilio_credentials
+    type: secret
+    secret_ref: gsm://projects/llm-lab-1771800794/secrets/twilio-credentials/versions/latest
+
+google_cloud:
+  - name: project_name
+    type: environment
+    env_var: GOOGLE_CLOUD_PROJECT_NAME
+  - name: project_id
+    type: environment
+    env_var: GOOGLE_CLOUD_PROJECT
+  - name: region
+    type: environment
+    env_var: GOOGLE_CLOUD_REGION
+  - name: zone
+    type: environment
+    env_var: GOOGLE_CLOUD_ZONE
+  - name: credentials_file
+    type: environment
+    env_var: GOOGLE_CLOUD_KEYFILE
+    default: ""
+
+google_storage:
+  - name: bucket_name
+    type: environment
+    env_var: GOOGLE_CLOUD_BUCKET_NAME
+  - name: archive_bucket
+    type: environment
+    env_var: GOOGLE_CLOUD_STORAGE_BUCKET
+  - name: storage_class
+    type: environment
+    env_var: GOOGLE_CLOUD_STORAGE_CLASS
+    default: ARCHIVE
