@@ -60,16 +60,19 @@ def _get_env(name: str) -> str | None:
 
 def get_gmail_client() -> GmailClient:
     sender_email = _get_env("APPROVAL_EMAIL_FROM")
-    to_email = _get_env("APPROVAL_EMAIL_TO") or _get_env("SUPPORT_EMAIL")
-    credentials_file = _get_env("GOOGLE_APPLICATION_CREDENTIALS")
+    to_email = _get_env("APPROVAL_EMAIL_TO")
+    credentials_file = _get_env("GOOGLE_CLOUD_KEYFILE") or _get_env("GOOGLE_APPLICATION_CREDENTIALS")
 
     if not sender_email or not to_email:
         try:
-            cfg = ConfigManager().load_service("notification")
-            sender_email = sender_email or cfg.get("email_from")
-            to_email = to_email or cfg.get("email_to")
+            profile_cfg = ConfigManager().load_service("profile")
+            sender_email = sender_email or profile_cfg.get("email_from")
+            to_email = profile_cfg.get("email_to")
         except ConfigManagerError:
             pass
+
+    if not to_email:
+        to_email = _get_env("SUPPORT_EMAIL")
 
     if not credentials_file:
         try:
@@ -80,11 +83,11 @@ def get_gmail_client() -> GmailClient:
 
     missing = []
     if not sender_email:
-        missing.append("APPROVAL_EMAIL_FROM")
+        missing.append("profile.email_from")
     if not to_email:
-        missing.append("APPROVAL_EMAIL_TO")
+        missing.append("profile.email_to")
     if not credentials_file:
-        missing.append("GOOGLE_APPLICATION_CREDENTIALS")
+        missing.append("GOOGLE_CLOUD_KEYFILE")
 
     if missing:
         raise GmailClientError(f"Missing Gmail config values: {', '.join(missing)}")

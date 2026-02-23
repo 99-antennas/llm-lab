@@ -50,6 +50,7 @@ def test_notification_dry_run_sms_uses_twilio_model():
     env.update(
         {
             "APPROVAL_NOTIFY_CHANNEL": "sms",
+            "APPROVAL_TO_NUMBER": "+15550002222",
             "TWILIO_CREDENTIALS": json.dumps(
                 {
                     "account_sid": "AC123",

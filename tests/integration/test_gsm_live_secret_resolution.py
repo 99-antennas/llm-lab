@@ -10,9 +10,9 @@ from clients.config_manager import ConfigManager
 
 
 def _run_live_check() -> None:
-    credentials_file = os.getenv("GOOGLE_CLOUD_KEYFILE")
+    credentials_file = os.getenv("GOOGLE_CLOUD_SM_KEYFILE")
     if not credentials_file or not Path(credentials_file).expanduser().exists():
-        raise RuntimeError("set GOOGLE_CLOUD_KEYFILE to an existing service account key file")
+        raise RuntimeError("set GOOGLE_CLOUD_SM_KEYFILE to an existing service account key file")
 
     manager = ConfigManager(config_path=Path("config/master_config.yaml"))
     values = manager.load_service("test")

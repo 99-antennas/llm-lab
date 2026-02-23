@@ -89,12 +89,20 @@ def test_google_secret_manager_fetches_secret(monkeypatch):
 
     class FakeSecretManagerServiceClient:
         def __init__(self, **kwargs):
-            pass
+            assert "credentials" in kwargs
 
         def access_secret_version(self, name: str):
             assert name == "projects/project-1/secrets/secret-name/versions/latest"
             return FakeResponse()
 
+    class FakeCredentials:
+        pass
+
+    monkeypatch.setenv("GOOGLE_CLOUD_SM_KEYFILE", "/tmp/fake-sm-sa.json")
+    monkeypatch.setattr(
+        "google.oauth2.service_account.Credentials.from_service_account_file",
+        lambda _: FakeCredentials(),
+    )
     monkeypatch.setattr(
         "google.cloud.secretmanager.SecretManagerServiceClient",
         FakeSecretManagerServiceClient,
@@ -103,3 +111,10 @@ def test_google_secret_manager_fetches_secret(monkeypatch):
     manager = GoogleSecretManager()
     value = manager.get_secret("gsm://project-1/secret-name/latest")
     assert value == "secret-value"
+
+
+def test_google_secret_manager_requires_sm_keyfile(monkeypatch):
+    monkeypatch.delenv("GOOGLE_CLOUD_SM_KEYFILE", raising=False)
+    manager = GoogleSecretManager()
+    with pytest.raises(SecretManagerError):
+        manager.get_secret("gsm://project-1/secret-name/latest")

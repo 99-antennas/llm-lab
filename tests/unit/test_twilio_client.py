@@ -28,6 +28,7 @@ def test_get_twilio_client_invalid_json_raises(monkeypatch):
 
 
 def test_twilio_send_sms_dry_run(monkeypatch, capsys):
+    monkeypatch.setenv("APPROVAL_TO_NUMBER", "+15550002222")
     monkeypatch.setenv(
         "TWILIO_CREDENTIALS",
         json.dumps(
