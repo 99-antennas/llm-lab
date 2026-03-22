@@ -29,6 +29,17 @@ services:
       postgres:
         condition: service_healthy
 
+  pipelines:
+    image: ghcr.io/open-webui/pipelines:main
+    volumes:
+      - ./pipelines:/app/pipelines
+    ports:
+      - "9099:9099"
+    environment:
+      PIPELINES_DIR: /app/pipelines
+      PIPELINES_API_KEY: 0p3n-w3bu!
+    restart: unless-stopped
+
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
     environment:
@@ -42,6 +53,8 @@ services:
       - "3000:8080"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    depends_on:
+      - pipelines
 
 volumes:
   postgres-data:

@@ -1,36 +1,47 @@
 # LLM Lab
 https://github.com/99-antennas/llm-lab/blob/main/README.md (public)
 
-# Requirements 
-- OLLAMA enables open source models to run on CPUs (ie. your laptop)
-- WEBUI a basic chat server that enables chat features with the local models.
-  (docker container)
+A self-hosted AI agent stack designed to run on an always-on local machine. Combines local LLMs via Ollama with a FastAPI backend, Postgres, Open WebUI, and a file parsing pipeline.
 
-# Installation
+# Requirements
+- [Ollama](https://ollama.com) — runs local LLMs natively (Metal GPU on Apple Silicon)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) — runs Postgres, API, Open WebUI, Pipelines
+- [uv](https://github.com/astral-sh/uv) — Python package manager
 
-LLM LAB – QUICK START
+# Services
 
-1. Install Ollama: https://ollama.com
-2. Install Docker: https://www.docker.com/products/docker-desktop/
-3. Run the setup script for your OS in the terminal:
-   - macOS/Linux: scripts/setup_models.sh
-   - Windows: scripts/setup_models.ps1
-4. Start Open WebUI 
-   - macOS/Linux: scripts/start_webui.sh
-   - Windows: scripts/start_webui.ps1
-5. Open browser to http://localhost:3000
-
+| Service | Port | Description |
+|---|---|---|
+| Open WebUI | 3000 | Chat interface |
+| llm-lab API | 8000 | Home agent FastAPI backend |
+| Pipelines | 9099 | Open WebUI filter pipeline (file parsing, image OCR) |
+| Postgres | 5432 | Internal only |
+| Ollama | 11434 | Internal only, native |
 
 # Startup
-On subsequent usage just run the following line in the terminal: 
-   - macOS/Linux: scripts/start_webui.sh
-   - Windows: powershell -ExecutionPolicy Bypass -File ./scripts/start_webui.ps1
+
+```bash
+docker compose up -d
+```
+
+Starts Postgres, the API (runs Aerich migrations automatically), Open WebUI, and the Pipelines service.
 
 # Shutdown
-   - macOS/Linux: scripts/stop_webui.sh
-   - Windows: powershell -ExecutionPolicy Bypass -File ./scripts/stop_webui.ps1
 
-   This stops the container but preserves all data (users, prompts, chats) stored in the `open-webui-data` Docker volume.
+```bash
+docker compose down
+```
+
+Data is preserved in Docker volumes (`postgres-data`, `open-webui`).
+
+# Capabilities
+
+- **File parsing** — `.txt`, `.pdf`, `.xlsx/.xls`, `.docx/.doc`, images (PNG, JPEG, GIF, WEBP, HEIC)
+  - Images: OCR via Claude Haiku vision (`ANTHROPIC_API_KEY` required)
+  - `POST /files/upload` — upload a file, get parsed text + structured data back
+  - `POST /files/from-gcs` — fetch and parse a file from a GCS URI (`gs://bucket/path`)
+- **Open WebUI Pipelines** — filter that intercepts image attachments in chat and prepends extracted text to the model's context window
+- **Search** — Google Custom Search (planned)
 
 # Additional Settings
 ## Configuration and Secrets
