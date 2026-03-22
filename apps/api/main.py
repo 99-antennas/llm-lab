@@ -5,6 +5,7 @@ from tortoise.contrib.fastapi import RegisterTortoise
 
 from apps.api.core.config import load_config_bundle
 from apps.api.db.base import TORTOISE_ORM
+from apps.api.routers.files import router as files_router
 
 
 @asynccontextmanager
@@ -19,6 +20,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Home Agent API", lifespan=lifespan)
+
+app.include_router(files_router)
 
 
 @app.get("/healthz")

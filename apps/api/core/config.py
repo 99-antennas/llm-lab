@@ -38,6 +38,9 @@ class Settings(BaseSettings):
     support_email: str | None = Field(default=None, alias="SUPPORT_EMAIL")
     github_repo: str | None = Field(default=None, alias="GITHUB_REPO")
 
+    # Direct API keys
+    anthropic_api_key: str | None = Field(default=None, alias="ANTHROPIC_API_KEY")
+
     # Secret references must point to Google Secret Manager refs (gsm://...)
     external_api_key_ref: str | None = Field(default=None, alias="EXTERNAL_API_KEY_REF")
     google_credentials_ref: str | None = Field(default=None, alias="GOOGLE_CREDENTIALS_REF")
