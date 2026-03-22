@@ -1,0 +1,4 @@
+interface:
+  display_name: "Notification"
+  short_description: "Alert by SMS or Google Workspace email before approvals"
+  default_prompt: "Use $notification to send me an alert before asking for elevated-permission approval."

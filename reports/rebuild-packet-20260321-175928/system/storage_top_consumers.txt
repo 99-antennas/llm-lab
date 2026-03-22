@@ -1,0 +1,217 @@
+# Captured: 2026-03-22T01:53:06Z
+
+## Disk overview
+Filesystem        Size    Used   Avail Capacity iused ifree %iused  Mounted on
+/dev/disk3s3s1   1.8Ti    14Gi   1.1Ti     2%    387k  4.3G    0%   /
+devfs            210Ki   210Ki     0Bi   100%     726     0  100%   /dev
+/dev/disk3s6     1.8Ti    20Ki   1.1Ti     1%       0   11G    0%   /System/Volumes/VM
+/dev/disk3s4     1.8Ti    11Gi   1.1Ti     2%    1.4k   11G    0%   /System/Volumes/Preboot
+/dev/disk3s2     1.8Ti   734Mi   1.1Ti     1%     291   11G    0%   /System/Volumes/Update
+/dev/disk1s2     500Mi   6.0Mi   480Mi     2%       1  4.9M    0%   /System/Volumes/xarts
+/dev/disk1s1     500Mi   6.1Mi   480Mi     2%      43  4.9M    0%   /System/Volumes/iSCPreboot
+/dev/disk1s3     500Mi   3.2Mi   480Mi     1%      72  4.9M    0%   /System/Volumes/Hardware
+/dev/disk3s1     1.8Ti   747Gi   1.1Ti    41%    3.9M   11G    0%   /System/Volumes/Data
+map auto_home      0Bi     0Bi     0Bi   100%       0     0     -   /System/Volumes/Data/home
+/dev/disk2s1     5.0Gi   1.7Gi   3.2Gi    36%      61   34M    0%   /System/Volumes/Update/SFR/mnt1
+/dev/disk3s3     1.8Ti    14Gi   1.1Ti     2%    406k  4.3G    0%   /System/Volumes/Update/mnt1
+
+## Top-level usage: /Users/kas
+141.45 GiB	144845.5 MiB	/Users/kas/Pictures
+32.74 GiB	33530.5 MiB	/Users/kas/Music
+30.46 GiB	31191.0 MiB	/Users/kas/gisdata
+10.86 GiB	11120.0 MiB	/Users/kas/dev
+9.25 GiB	9470.1 MiB	/Users/kas/.local
+6.67 GiB	6829.7 MiB	/Users/kas/.cache
+5.41 GiB	5544.2 MiB	/Users/kas/Desktop
+1.40 GiB	1432.8 MiB	/Users/kas/.pyenv
+1.22 GiB	1249.1 MiB	/Users/kas/.npm
+0.84 GiB	858.2 MiB	/Users/kas/.vscode
+0.50 GiB	514.3 MiB	/Users/kas/.cursor
+0.40 GiB	408.2 MiB	/Users/kas/Downloads
+0.18 GiB	180.5 MiB	/Users/kas/unf_local
+0.16 GiB	161.5 MiB	/Users/kas/.docker
+0.12 GiB	123.0 MiB	/Users/kas/.config
+0.10 GiB	101.1 MiB	/Users/kas/Documents
+0.07 GiB	71.5 MiB	/Users/kas/Movies
+0.05 GiB	50.1 MiB	/Users/kas/bin
+0.04 GiB	43.0 MiB	/Users/kas/.ipython
+0.02 GiB	20.5 MiB	/Users/kas/.kube
+0.02 GiB	16.3 MiB	/Users/kas/Applications
+0.01 GiB	14.3 MiB	/Users/kas/.codex
+0.01 GiB	11.8 MiB	/Users/kas/.ollama
+0.01 GiB	7.6 MiB	/Users/kas/.cocoapods
+0.01 GiB	6.6 MiB	/Users/kas/.claude.bak.1774140973
+0.00 GiB	0.8 MiB	/Users/kas/.Trash
+0.00 GiB	0.6 MiB	/Users/kas/.fairlearn-data
+0.00 GiB	0.3 MiB	/Users/kas/.claude
+0.00 GiB	0.3 MiB	/Users/kas/.matplotlib
+0.00 GiB	0.2 MiB	/Users/kas/.mongodb
+
+## Top-level usage: /Users/kas/Library
+160.55 GiB	164407.4 MiB	/Users/kas/Library/Containers
+57.00 GiB	58368.7 MiB	/Users/kas/Library/Group Containers
+29.46 GiB	30167.9 MiB	/Users/kas/Library/Caches
+24.92 GiB	25522.2 MiB	/Users/kas/Library/Developer
+15.13 GiB	15489.6 MiB	/Users/kas/Library/Application Support
+13.13 GiB	13449.8 MiB	/Users/kas/Library/Messages
+1.91 GiB	1959.5 MiB	/Users/kas/Library/Photos
+1.03 GiB	1057.7 MiB	/Users/kas/Library/Metadata
+0.33 GiB	342.4 MiB	/Users/kas/Library/IntelligencePlatform
+0.25 GiB	257.6 MiB	/Users/kas/Library/Mobile Documents
+0.13 GiB	130.7 MiB	/Users/kas/Library/Python
+0.10 GiB	107.3 MiB	/Users/kas/Library/Logs
+0.09 GiB	90.2 MiB	/Users/kas/Library/Biome
+0.07 GiB	76.3 MiB	/Users/kas/Library/HTTPStorages
+0.06 GiB	61.5 MiB	/Users/kas/Library/Keychains
+0.06 GiB	60.7 MiB	/Users/kas/Library/Daemon Containers
+0.06 GiB	57.2 MiB	/Users/kas/Library/helm
+0.04 GiB	40.4 MiB	/Users/kas/Library/Calendars
+0.03 GiB	29.5 MiB	/Users/kas/Library/Fonts
+0.02 GiB	21.6 MiB	/Users/kas/Library/Assistant
+0.02 GiB	21.6 MiB	/Users/kas/Library/AppleMediaServices
+0.01 GiB	13.5 MiB	/Users/kas/Library/PersonalizationPortrait
+0.01 GiB	13.4 MiB	/Users/kas/Library/Google
+0.01 GiB	12.5 MiB	/Users/kas/Library/Safari
+0.01 GiB	10.8 MiB	/Users/kas/Library/HomeKit
+0.01 GiB	9.5 MiB	/Users/kas/Library/Suggestions
+0.01 GiB	9.4 MiB	/Users/kas/Library/Finance
+0.01 GiB	8.8 MiB	/Users/kas/Library/IdentityServices
+0.01 GiB	6.0 MiB	/Users/kas/Library/Mail
+0.01 GiB	5.9 MiB	/Users/kas/Library/StatusKit
+0.01 GiB	5.4 MiB	/Users/kas/Library/Trial
+0.01 GiB	5.2 MiB	/Users/kas/Library/iTunes
+0.00 GiB	4.9 MiB	/Users/kas/Library/Jupyter
+0.00 GiB	3.9 MiB	/Users/kas/Library/Preferences
+0.00 GiB	3.7 MiB	/Users/kas/Library/KeyboardServices
+0.00 GiB	3.5 MiB	/Users/kas/Library/WebKit
+0.00 GiB	3.1 MiB	/Users/kas/Library/Sharing
+0.00 GiB	2.7 MiB	/Users/kas/Library/ContainerManager
+0.00 GiB	2.4 MiB	/Users/kas/Library/Shortcuts
+0.00 GiB	2.3 MiB	/Users/kas/Library/com.apple.aiml.instrumentation
+
+## Top-level usage: /Users/kas/dev
+4.47 GiB	4576.8 MiB	/Users/kas/dev/unf
+2.01 GiB	2060.3 MiB	/Users/kas/dev/unf_tmp
+1.07 GiB	1096.9 MiB	/Users/kas/dev/99a
+0.79 GiB	812.3 MiB	/Users/kas/dev/fairlearn
+0.72 GiB	736.8 MiB	/Users/kas/dev/bsq
+0.67 GiB	687.0 MiB	/Users/kas/dev/buildrs
+0.48 GiB	494.5 MiB	/Users/kas/dev/pycon_2022
+0.44 GiB	453.4 MiB	/Users/kas/dev/llm-lab
+0.09 GiB	93.0 MiB	/Users/kas/dev/archiver
+0.06 GiB	60.9 MiB	/Users/kas/dev/pybay_2024
+0.02 GiB	22.1 MiB	/Users/kas/dev/pycon_2023
+0.00 GiB	1.4 MiB	/Users/kas/dev/osdc_2024
+0.00 GiB	0.8 MiB	/Users/kas/dev/rebuild-packet-20260321-175928
+0.00 GiB	0.5 MiB	/Users/kas/dev/miniunified
+0.00 GiB	0.3 MiB	/Users/kas/dev/base
+0.00 GiB	0.2 MiB	/Users/kas/dev/install_logs
+0.00 GiB	0.1 MiB	/Users/kas/dev/leetcode
+0.00 GiB	0.0 MiB	/Users/kas/dev/bin
+
+## Top-level usage: /Applications
+5.68 GiB	5813.4 MiB	/Applications/Xcode.app
+2.31 GiB	2367.3 MiB	/Applications/Microsoft Word.app
+2.03 GiB	2082.5 MiB	/Applications/Microsoft Excel.app
+1.79 GiB	1830.8 MiB	/Applications/Docker.app
+1.73 GiB	1776.1 MiB	/Applications/Microsoft PowerPoint.app
+1.29 GiB	1322.6 MiB	/Applications/Google Chrome.app
+1.12 GiB	1144.7 MiB	/Applications/OneDrive.app
+1.10 GiB	1128.2 MiB	/Applications/Microsoft OneNote.app
+1.03 GiB	1056.3 MiB	/Applications/Adobe Acrobat Reader.app
+0.66 GiB	675.3 MiB	/Applications/Visual Studio Code.app
+0.51 GiB	517.4 MiB	/Applications/Keynote.app
+0.46 GiB	476.0 MiB	/Applications/1Password.app
+0.46 GiB	475.7 MiB	/Applications/PDFpenPro.app
+0.46 GiB	466.5 MiB	/Applications/Microsoft Teams.app
+0.44 GiB	451.9 MiB	/Applications/logioptionsplus.app
+0.43 GiB	441.6 MiB	/Applications/Cursor.app
+0.43 GiB	440.6 MiB	/Applications/Pages.app
+0.42 GiB	431.0 MiB	/Applications/Ollama.app
+0.42 GiB	425.6 MiB	/Applications/Discord.app
+0.39 GiB	400.2 MiB	/Applications/Numbers.app
+0.37 GiB	374.2 MiB	/Applications/Codex.app
+0.35 GiB	359.1 MiB	/Applications/Postman.app
+0.33 GiB	335.9 MiB	/Applications/TablePlus.app
+0.33 GiB	332.8 MiB	/Applications/zoom.us.app
+0.28 GiB	291.0 MiB	/Applications/Spotify.app
+0.28 GiB	287.2 MiB	/Applications/Slack.app
+0.18 GiB	184.3 MiB	/Applications/Sourcetree.app
+0.10 GiB	103.1 MiB	/Applications/iTerm.app
+0.07 GiB	67.5 MiB	/Applications/TunnelBear.app
+0.03 GiB	29.8 MiB	/Applications/BackblazeRestore.app
+0.03 GiB	29.5 MiB	/Applications/Backblaze.app
+0.02 GiB	23.5 MiB	/Applications/Tailscale.app
+0.02 GiB	17.9 MiB	/Applications/Unified.app
+0.01 GiB	7.6 MiB	/Applications/TestFlight.app
+0.01 GiB	6.3 MiB	/Applications/GCal for Google Calendar.app
+0.00 GiB	2.6 MiB	/Applications/ScreenJump.app
+0.00 GiB	2.6 MiB	/Applications/Utilities
+0.00 GiB	0.0 MiB	/Applications/Safari.app
+
+## Largest files in /Users/kas (>500MB, top 80)
+476.84 GiB	488281.0 MiB	/Users/kas/Library/Containers/com.docker.docker/Data/vms/0/data/Docker.raw
+9.46 GiB	9683.9 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/2/2664D6F8-D6F3-475B-94B2-94252D20A79A.mov
+7.08 GiB	7248.6 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/C/CF2455F8-DA9D-4083-A984-2B7851734D2E.mov
+6.41 GiB	6562.3 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/3/33078FFC-1335-4491-9250-54110E74D372.mov
+4.84 GiB	4953.1 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/EEAE274B-196F-47EF-8685-E690F57A3507.mp4
+4.84 GiB	4953.1 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/DBCD5466-D5E0-4AC0-A390-39EADDD8BFBD.mp4
+4.09 GiB	4192.2 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/6E8A98A6-A179-46E7-A53C-FFC325A71BBC.mp4
+3.98 GiB	4072.1 MiB	/Users/kas/Library/Application Support/Google/Chrome/OptGuideOnDeviceModel/2025.8.8.1141/weights.bin
+3.71 GiB	3795.6 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/B/B8B49A08-1239-4775-8E54-FD1B0AFB6594.mov
+3.31 GiB	3392.4 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/C62E0F09-1B27-41A4-96DA-97FC05597CC6.mp4
+2.92 GiB	2988.6 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/B060D822-8835-4EC9-A0EA-625EDD8F5D7F.mp4
+2.81 GiB	2878.0 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/B30863B9-9712-4853-8FC7-BA0CCA3F7F29.mp4
+2.75 GiB	2815.7 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/71DAAD8A-978A-45DC-BA19-9811B2D8A0EB.mp4
+2.55 GiB	2611.4 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/9/9892A60B-0088-48A5-8CC4-535C7B93EA47.mov
+2.49 GiB	2553.1 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/8/8291B515-ADC7-4F96-B739-21289F39637F.mov
+2.48 GiB	2542.7 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/7952CB39-2BB8-4D3A-B750-746ABFF95E29.mp4
+2.34 GiB	2396.3 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/B/BC51C401-7085-4CAE-B426-B0851982A0E0.mov
+2.24 GiB	2293.5 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/A/ABE8DB4C-B9A6-4421-8CAB-C3DA39B1228D.mov
+1.82 GiB	1868.3 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/2F2C0638-7CDD-4F81-89EA-E5831A52D800.mp4
+1.75 GiB	1792.0 MiB	/Users/kas/.cache/huggingface/hub/models--Salesforce--blip-image-captioning-large/snapshots/2227ac38c9f16105cb0412e7cab4759978a8fd90/model.safetensors
+1.75 GiB	1792.0 MiB	/Users/kas/.cache/huggingface/hub/models--Salesforce--blip-image-captioning-large/blobs/ebc867586b8318647dd7b75ef8e52f93f89b98ac7dcbd04d10219d33b9a68c6f
+1.64 GiB	1682.3 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/05AE6B93-3043-424E-809A-17B9B56AE586.mp4
+1.59 GiB	1631.3 MiB	/Users/kas/.cache/huggingface/hub/models--openai--clip-vit-large-patch14/snapshots/32bd64288804d66eefd0ccbe215aa642df71cc41/model.safetensors
+1.59 GiB	1631.3 MiB	/Users/kas/.cache/huggingface/hub/models--openai--clip-vit-large-patch14/blobs/a2bf730a0c7debf160f7a6b50b3aaf3703e7e88ac73de7a314903141db026dcb
+1.51 GiB	1545.4 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/2E527AA4-F048-448E-BB65-67C90F5C41D0.mp4
+1.45 GiB	1488.4 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/ECAAC14D-E4B1-40C2-9E92-1C6A7E31F40E.mp4
+1.43 GiB	1468.6 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/478BC8DB-3DF5-47EE-A795-2F8901627A71.mp4
+1.41 GiB	1444.9 MiB	/Users/kas/Library/Developer/Xcode/iOS DeviceSupport/15.6.1 (19G82) arm64e/Symbols/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64e
+1.41 GiB	1444.9 MiB	/Users/kas/Library/Developer/Xcode/iOS DeviceSupport/15.6 (19G71) arm64e/Symbols/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64e
+1.41 GiB	1442.1 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/C6A7CE45-F2DD-4F6A-852C-24D07003E77A.mp4
+1.37 GiB	1407.9 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/4/41D39F9C-9072-4F72-9F74-D9F1E14551CD.mov
+1.37 GiB	1405.8 MiB	/Users/kas/Library/Developer/CoreSimulator/Caches/dyld/23A344/com.apple.CoreSimulator.SimRuntime.iOS-17-0.21A328/dyld_sim_shared_cache_arm64
+1.37 GiB	1398.1 MiB	/Users/kas/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/ZOOM0005.WAV
+1.27 GiB	1303.8 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/4B583C93-AA06-4A85-9695-6472948EC9CE.mp4
+1.26 GiB	1290.4 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/6/6DC702FD-3B9A-490A-B854-A074EE7837E1.mov
+1.24 GiB	1272.6 MiB	/Users/kas/.cache/huggingface/hub/models--dbmdz--bert-large-cased-finetuned-conll03-english/snapshots/4c534963167c08d4b8ff1f88733cf2930f86add0/model.safetensors
+1.24 GiB	1272.6 MiB	/Users/kas/.cache/huggingface/hub/models--dbmdz--bert-large-cased-finetuned-conll03-english/blobs/9a90b161380a5549418764749cabe9257dce2df7fa58bcec648289f00f982ebb
+1.09 GiB	1116.2 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/AA1E7F5D-2C25-4AFE-B1BF-251FCACFB79D.mp4
+1.01 GiB	1035.9 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/80D13863-9AEC-4234-9114-804FC6D4A16A.mp4
+0.98 GiB	999.3 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/D/D67ABFC8-4473-45E7-991D-373BBE446E20.mov
+0.91 GiB	936.6 MiB	/Users/kas/.cache/huggingface/hub/models--nlpconnect--vit-gpt2-image-captioning/snapshots/dc68f91c06a1ba6f15268e5b9c13ae7a7c514084/pytorch_model.bin
+0.91 GiB	936.6 MiB	/Users/kas/.cache/huggingface/hub/models--nlpconnect--vit-gpt2-image-captioning/blobs/2605a69b760d0b218c3b5d2069ba070d28f279a16ce4bc87bf019b75a91553e6
+0.90 GiB	923.7 MiB	/Users/kas/dev/unf/unified-mobile/ios/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64_x86_64-maccatalyst/hermes.framework/hermes
+0.90 GiB	923.7 MiB	/Users/kas/dev/unf/unified-mobile/ios/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64_x86_64-maccatalyst/hermes.framework/Versions/0/hermes
+0.86 GiB	877.3 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/7084D1B7-4110-4015-93A4-F717E41B2317.mp4
+0.85 GiB	867.2 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/5/59649908-7049-42E0-87BD-FF12B29A4525.mov
+0.84 GiB	863.4 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/4/4A7F5D78-ED2E-4F6D-8F84-9B38865BBBF2.mov
+0.84 GiB	859.4 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/5/50544B5D-FDD0-4DB3-B606-4BC6F4CC7D63.mov
+0.82 GiB	839.2 MiB	/Users/kas/Library/Group Containers/243LU875E5.groups.com.apple.podcasts/Library/Cache/8108E930-6242-4D37-B960-740C457E959F.mp4
+0.79 GiB	812.0 MiB	/Users/kas/Library/Developer/Xcode/iOS DeviceSupport/15.6.1 (19G82) arm64e/Symbols/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64e.1
+0.79 GiB	812.0 MiB	/Users/kas/Library/Developer/Xcode/iOS DeviceSupport/15.6 (19G71) arm64e/Symbols/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64e.1
+0.77 GiB	786.6 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/database/Photos.sqlite
+0.71 GiB	727.3 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/0/05BB96AE-ABA0-4CF0-9663-D6291815DA94.mov
+0.67 GiB	690.5 MiB	/Users/kas/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/ZOOM0001.WAV
+0.67 GiB	690.5 MiB	/Users/kas/Music/Music/Media.localized/Music/Unknown Artist/Unknown Album/NCLB_Westfield_Day 1_20150218_1.WAV
+0.65 GiB	668.8 MiB	/Users/kas/Library/Application Support/Google/GoogleUpdater/crx_cache/c374c31e69b338b73403d7bc6d27d5fcc5dc67020423b98bf8a8198eb2eec1b3
+0.65 GiB	664.5 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/3/3E95E693-3432-4FA9-895D-45356D146A0B.mov
+0.59 GiB	604.7 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/7/74EA15FE-45E8-43CE-8B22-7329A0387AB2.mov
+0.56 GiB	577.2 MiB	/Users/kas/.cache/huggingface/hub/models--sentence-transformers--clip-ViT-B-32/snapshots/11fb331c2c388748c110926aa8013161cb5a85b5/0_CLIPModel/pytorch_model.bin
+0.56 GiB	577.2 MiB	/Users/kas/.cache/huggingface/hub/models--sentence-transformers--clip-ViT-B-32/blobs/a62934cf6216e42859223aed2df08b4f1bd0042cb31be80d2db5cd54f71c0d16
+0.51 GiB	526.1 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/4/49657F6D-EA34-4360-AD25-6042DE6D9EB3.mov
+0.50 GiB	517.1 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/C/CDE28FCA-20FB-466D-81FE-B1A3B5F71CC4.mov
+0.49 GiB	503.5 MiB	/Users/kas/gisdata/www2.census.gov/geo/tiger/TIGER2022/ZCTA520/tl_2022_us_zcta520.zip
+0.49 GiB	502.6 MiB	/Users/kas/gisdata/www2.census.gov/geo/tiger/TIGER2021/ZCTA520/tl_2021_us_zcta520.zip
+0.49 GiB	502.1 MiB	/Users/kas/Pictures/Photos Library.photoslibrary/originals/3/3E70FE2C-1F30-41C4-879D-D2E7C501A84E.mov

@@ -1,0 +1,62 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: home_agent
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d home_agent"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/home_agent
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  pipelines:
+    image: ghcr.io/open-webui/pipelines:main
+    volumes:
+      - ./pipelines:/app/pipelines
+    ports:
+      - "9099:9099"
+    environment:
+      PIPELINES_DIR: /app/pipelines
+      PIPELINES_API_KEY: 0p3n-w3bu!
+    restart: unless-stopped
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    environment:
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      WEBUI_URL: http://loveshack:3000
+      ENV: dev
+      ENABLE_API_KEYS: "true"
+    volumes:
+      - open-webui:/app/backend/data
+    ports:
+      - "3000:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - pipelines
+
+volumes:
+  postgres-data:
+  open-webui:
+    external: true

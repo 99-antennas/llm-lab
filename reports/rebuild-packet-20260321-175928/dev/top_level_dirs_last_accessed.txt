@@ -1,0 +1,22 @@
+### /dev (top-level directories, last accessed)
+2026-03-08 18:46:39	/dev/fd
+2026-03-08 18:46:39	/dev/monotonic
+
+### /Users/kas/dev (top-level directories, last accessed)
+2021-10-22 15:06:01	/Users/kas/dev/buildrs
+2022-01-24 10:19:03	/Users/kas/dev/fairlearn
+2022-05-24 17:11:29	/Users/kas/dev/pycon_2022
+2022-10-03 13:28:07	/Users/kas/dev/bsq
+2022-10-11 09:01:33	/Users/kas/dev/base
+2023-04-21 10:25:52	/Users/kas/dev/pycon_2023
+2023-05-24 16:23:22	/Users/kas/dev/bin
+2023-05-26 22:43:34	/Users/kas/dev/99a
+2024-09-20 11:17:37	/Users/kas/dev/pybay_2024
+2024-10-15 14:50:44	/Users/kas/dev/miniunified
+2024-11-12 08:17:46	/Users/kas/dev/osdc_2024
+2024-12-11 08:49:17	/Users/kas/dev/unf
+2025-01-16 11:34:15	/Users/kas/dev/leetcode
+2025-01-22 10:50:12	/Users/kas/dev/unf_tmp
+2026-02-22 13:25:24	/Users/kas/dev/archiver
+2026-03-08 18:46:14	/Users/kas/dev/install_logs
+2026-03-21 17:44:36	/Users/kas/dev/llm-lab
