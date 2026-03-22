@@ -1,8 +1,24 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
+from tortoise.contrib.fastapi import RegisterTortoise
 
 from apps.api.core.config import load_config_bundle
+from apps.api.db.base import TORTOISE_ORM
 
-app = FastAPI(title="Home Agent API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async with RegisterTortoise(
+        app,
+        config=TORTOISE_ORM,
+        generate_schemas=False,
+        add_exception_handlers=True,
+    ):
+        yield
+
+
+app = FastAPI(title="Home Agent API", lifespan=lifespan)
 
 
 @app.get("/healthz")

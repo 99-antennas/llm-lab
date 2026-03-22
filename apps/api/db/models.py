@@ -1,43 +1,40 @@
 from __future__ import annotations
 
-from datetime import datetime
-
-from sqlalchemy import DateTime, ForeignKey, String, Text, func
-from sqlalchemy.orm import Mapped, mapped_column
-
-from apps.api.db.base import Base
+from tortoise import fields
+from tortoise.models import Model
 
 
-class UserDB(Base):
-    __tablename__ = "users"
+class User(Model):
+    id = fields.CharField(pk=True, max_length=64)
+    email = fields.CharField(max_length=255, unique=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
 
-    id: Mapped[str] = mapped_column(String(64), primary_key=True)
-    email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
+    class Meta:
+        table = "users"
+
+
+class TaskRun(Model):
+    id = fields.CharField(pk=True, max_length=64)
+    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
+        "models.User", related_name="task_runs"
     )
+    status = fields.CharField(max_length=40)
+    payload = fields.TextField(null=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+    class Meta:
+        table = "task_runs"
 
 
-class TaskRunDB(Base):
-    __tablename__ = "task_runs"
-
-    id: Mapped[str] = mapped_column(String(64), primary_key=True)
-    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), nullable=False)
-    status: Mapped[str] = mapped_column(String(40), nullable=False)
-    payload: Mapped[str | None] = mapped_column(Text, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
+class AuditLog(Model):
+    id = fields.CharField(pk=True, max_length=64)
+    user: fields.ForeignKeyRelation[User] = fields.ForeignKeyField(
+        "models.User", related_name="audit_logs"
     )
+    tool_name = fields.CharField(max_length=120)
+    tool_version = fields.CharField(max_length=40)
+    action = fields.CharField(max_length=120)
+    created_at = fields.DatetimeField(auto_now_add=True)
 
-
-class AuditLogDB(Base):
-    __tablename__ = "audit_logs"
-
-    id: Mapped[str] = mapped_column(String(64), primary_key=True)
-    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), nullable=False)
-    tool_name: Mapped[str] = mapped_column(String(120), nullable=False)
-    tool_version: Mapped[str] = mapped_column(String(40), nullable=False)
-    action: Mapped[str] = mapped_column(String(120), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
+    class Meta:
+        table = "audit_logs"
