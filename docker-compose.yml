@@ -29,6 +29,23 @@ services:
       postgres:
         condition: service_healthy
 
+  hermes:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    entrypoint: ["hermes"]
+    command: ["gateway", "run", "--accept-hooks", "--quiet"]
+    env_file:
+      - .env
+    environment:
+      HERMES_HOME: /root/.hermes
+    volumes:
+      - hermes-home:/root/.hermes
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
   pipelines:
     image: ghcr.io/open-webui/pipelines:main
     volumes:
@@ -43,7 +60,10 @@ services:
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
     environment:
-      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      # llama-server runs on the host (Metal GPU acceleration requires native process)
+      # Start it with: ./scripts/start_llama_server.sh
+      OPENAI_API_BASE_URL: http://host.docker.internal:8080/v1
+      OPENAI_API_KEY: "not-needed"
       WEBUI_URL: http://loveshack:3000
       ENV: dev
       ENABLE_API_KEYS: "true"
@@ -58,5 +78,6 @@ services:
 
 volumes:
   postgres-data:
+  hermes-home:
   open-webui:
     external: true

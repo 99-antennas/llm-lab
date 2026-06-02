@@ -1,10 +1,11 @@
 # LLM Lab
 https://github.com/99-antennas/llm-lab/blob/main/README.md (public)
 
-A self-hosted AI agent stack designed to run on an always-on local machine. Combines local LLMs via Ollama with a FastAPI backend, Postgres, Open WebUI, and a file parsing pipeline.
+A self-hosted AI agent stack for an always-on local machine. It pairs a host-run llama.cpp model server with a FastAPI backend, Postgres, Open WebUI, and a file parsing pipeline.
 
 # Requirements
-- [Ollama](https://ollama.com) — runs local LLMs natively (Metal GPU on Apple Silicon)
+- [llama.cpp](https://github.com/ggml-org/llama.cpp) — runs local LLMs natively on the host (Metal GPU on Apple Silicon)
+- [huggingface_hub CLI](https://huggingface.co/docs/huggingface_hub/guides/cli) — downloads GGUF model files via `hf`
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) — runs Postgres, API, Open WebUI, Pipelines
 - [uv](https://github.com/astral-sh/uv) — Python package manager
 
@@ -13,10 +14,11 @@ A self-hosted AI agent stack designed to run on an always-on local machine. Comb
 | Service | Port | Description |
 |---|---|---|
 | Open WebUI | 3000 | Chat interface |
+| Hermes | internal | Agent gateway/container for orchestration and messaging |
 | llm-lab API | 8000 | Home agent FastAPI backend |
 | Pipelines | 9099 | Open WebUI filter pipeline (file parsing, image OCR) |
 | Postgres | 5432 | Internal only |
-| Ollama | 11434 | Internal only, native |
+| llama.cpp | 8080 | Internal only, native host process |
 
 # Startup
 
@@ -24,7 +26,18 @@ A self-hosted AI agent stack designed to run on an always-on local machine. Comb
 docker compose up -d
 ```
 
-Starts Postgres, the API (runs Aerich migrations automatically), Open WebUI, and the Pipelines service.
+Starts Postgres, Hermes, the API (including Aerich migrations), Open WebUI, and the Pipelines service.
+
+Start the local model server on the host before bringing up the Docker stack:
+
+```bash
+brew install llama.cpp huggingface-cli
+hf auth login
+hf download unsloth/Qwen3.6-35B-A3B-GGUF Qwen3.6-35B-A3B-UD-Q4_K_M.gguf --local-dir ~/models
+./scripts/start_llama_server.sh
+```
+
+Docker services reach the host model server at `http://host.docker.internal:8080`.
 
 # Shutdown
 
@@ -33,6 +46,36 @@ docker compose down
 ```
 
 Data is preserved in Docker volumes (`postgres-data`, `open-webui`).
+
+## Local Model Setup
+
+This repo is configured to use llama.cpp on the macOS host, not inside Docker. That is required for Metal GPU acceleration on Apple Silicon.
+
+
+Recommended model:
+
+```bash
+hf download unsloth/Qwen3.6-35B-A3B-GGUF Qwen3.6-35B-A3B-UD-Q4_K_M.gguf --local-dir ~/models
+```
+
+Start it with:
+
+```bash
+./scripts/start_llama_server.sh
+```
+
+The startup flags live in [scripts/start_llama_server.sh](/Users/kas/dev/llm-lab/scripts/start_llama_server.sh).
+
+Then point Hermes at that endpoint:
+
+```bash
+hermes setup model
+```
+
+Use these values:
+
+- Base URL: `http://localhost:8080/v1`
+- Model name: `Qwen3.6-35B-A3B-UD-Q4_K_M.gguf`
 
 # Capabilities
 
