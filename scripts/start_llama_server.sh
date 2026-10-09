@@ -27,7 +27,7 @@ fi
 
 echo "Starting llama-server on $HOST:$PORT with model: $MODEL"
 
-llama-server \
+exec llama-server \
   -m "$MODEL" \
   -ngl 99 \
   -c 131072 \

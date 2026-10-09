@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.12-slim AS runtime
 
 WORKDIR /app
 
@@ -15,3 +15,16 @@ COPY . .
 EXPOSE 8000
 
 ENTRYPOINT ["docker/entrypoint.sh"]
+
+FROM nousresearch/hermes-agent:v0.21.6 AS hermes
+
+USER root
+RUN python3 -m venv /opt/hermes-gsm-venv \
+    && /opt/hermes-gsm-venv/bin/pip install --no-cache-dir \
+        google-cloud-secret-manager==2.31.0
+
+COPY apps/hermes_gateway.py /opt/hermes-gsm/apps/hermes_gateway.py
+COPY clients/secret_manager.py /opt/hermes-gsm/clients/secret_manager.py
+COPY docker/hermes-secrets-init.py /opt/hermes-gsm/docker/hermes-secrets-init.py
+COPY docker/hermes-secrets-init.sh /etc/cont-init.d/014-hermes-google-secrets
+RUN chmod 0755 /etc/cont-init.d/014-hermes-google-secrets
