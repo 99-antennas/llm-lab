@@ -75,7 +75,7 @@ def main() -> None:
 
     from clients.secret_manager import GoogleSecretManager
 
-    root = Path(__file__).resolve().parent
+    root = Path(__file__).resolve().parents[1]
     load_dotenv(root / ".env")
     reference = os.environ.get("HERMES_API_KEY_REF")
     if not reference:

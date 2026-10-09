@@ -78,6 +78,49 @@ def test_missing_database_does_not_create_one(tmp_path):
     assert not path.exists()
 
 
+def test_repair_uses_repository_root_from_another_directory(monkeypatch, tmp_path):
+    import dotenv
+
+    script = Path(repair.__file__).resolve()
+    root = Path(__file__).resolve().parents[2]
+    dotenv_paths = []
+    calls = []
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(repair.sys, "argv", [str(script)])
+    monkeypatch.delenv("HERMES_API_KEY_REF", raising=False)
+
+    def load_dotenv(path):
+        dotenv_paths.append(path)
+        monkeypatch.setenv("HERMES_API_KEY_REF", "gsm://project/hermes-key/latest")
+
+    def get_secret(self, reference):
+        assert reference == "gsm://project/hermes-key/latest"
+        return "test-key"
+
+    monkeypatch.setattr(dotenv, "load_dotenv", load_dotenv)
+    monkeypatch.setattr(hermes_gateway.GoogleSecretManager, "get_secret", get_secret)
+    monkeypatch.setattr(
+        repair.subprocess, "run", lambda *args, **kwargs: calls.append((args, kwargs))
+    )
+
+    repair.main()
+
+    assert dotenv_paths == [root / ".env"]
+    assert calls == [
+        (
+            ([
+                "docker", "compose", "exec", "-T", "open-webui", "python",
+                "-c", script.read_text(), "--container",
+            ],),
+            {"input": "test-key", "text": True, "cwd": root, "check": True},
+        ),
+        (
+            (["docker", "compose", "restart", "open-webui"],),
+            {"cwd": root, "check": True},
+        ),
+    ]
+
+
 def test_gateway_requires_secret_reference(monkeypatch):
     monkeypatch.delenv("HERMES_API_KEY_REF", raising=False)
     with pytest.raises(RuntimeError, match="HERMES_API_KEY_REF"):

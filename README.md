@@ -140,7 +140,7 @@ browser machine or directly on the server host.
 
    ```bash
    docker compose up -d --build hermes open-webui
-   uv run python fix-openwebui-config.py
+   uv run python scripts/fix-openwebui-config.py
    ```
 
    Run the repair command on the Docker host from this checkout. It verifies the
