@@ -217,10 +217,11 @@ def test_register_registers_tools_and_skill():
     ctx = Ctx()
     plugin.register(ctx)
     assert set(ctx.tools) == {"slack_channel_members", "slack_list_channels", "slack_post_message",
-                              "slack_get_replies"}
+                              "slack_get_replies", "slack_bot_manifest"}
+    assert ctx.tools["slack_bot_manifest"]["check_fn"]() is True
     assert ctx.tools["slack_post_message"]["schema"]["parameters"]["required"] == ["text"]
     assert all(t["toolset"] == "slack_workspace" for t in ctx.tools.values())
-    assert set(ctx.skills) == {"slack-workspace"}
+    assert set(ctx.skills) == {"slack-workspace", "slack-bot-manifest"}
 
 
 # -- posting and collecting replies -------------------------------------------------------------

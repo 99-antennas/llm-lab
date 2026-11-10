@@ -12,10 +12,12 @@ import os
 import threading
 from pathlib import Path
 
+from .manifest import ManifestError, manifest_package
 from .workspace import SlackLookupError, SlackWorkspace, sdk_call_factory
 
 TOOLSET = "slack_workspace"
-_SKILL_MD = Path(__file__).parent / "skills" / "slack-workspace" / "SKILL.md"
+_SKILLS_DIR = Path(__file__).parent / "skills"
+_SKILL_MD = _SKILLS_DIR / "slack-workspace" / "SKILL.md"
 
 _lock = threading.Lock()
 _workspace: tuple[str, SlackWorkspace] | None = None
@@ -137,6 +139,20 @@ def slack_get_replies(args: dict, **_kwargs) -> str:
     return json.dumps(result, ensure_ascii=False)
 
 
+def slack_bot_manifest(args: dict, **_kwargs) -> str:
+    args = args or {}
+    try:
+        package = manifest_package(
+            str(args.get("app_name") or ""),
+            description=str(args.get("description") or ""),
+            display_name=str(args.get("display_name") or ""),
+            background_color=str(args.get("background_color") or "#2c2d30"),
+        )
+    except ManifestError as exc:
+        return json.dumps({"error": "invalid_manifest_input", "hint": str(exc)})
+    return json.dumps(package, ensure_ascii=False)
+
+
 _TOOLS = {
     "slack_channel_members": (
         slack_channel_members,
@@ -173,6 +189,22 @@ _TOOLS = {
         },
         ["text"],
     ),
+    "slack_bot_manifest": (
+        slack_bot_manifest,
+        "Generate a Slack app manifest for an EXTERNAL bot (another person's agent) so it can "
+        "communicate like Shack: read and post in channels it's invited to, DMs, files, member "
+        "lists, mentions. It can never add or remove people, join or manage channels, post where "
+        "it isn't a member, impersonate anyone, or use a user token. Returns the manifest JSON, "
+        "what is and isn't granted, and setup steps for the bot's author.",
+        {
+            "app_name": {"type": "string", "description": "The bot's app name (max 35 characters)."},
+            "description": {"type": "string", "description": "Short description (max 140 characters)."},
+            "display_name": {"type": "string", "description": "Bot handle: lowercase letters, digits, . _ - "
+                             "(default: derived from app_name)."},
+            "background_color": {"type": "string", "description": "App color like #2c2d30."},
+        },
+        ["app_name"],
+    ),
     "slack_get_replies": (
         slack_get_replies,
         "Collect answers to a message Shack posted: thread replies plus later channel messages from the "
@@ -196,11 +228,15 @@ def register(ctx) -> None:
             toolset=TOOLSET,
             schema={"name": name, "description": description, "parameters": parameters},
             handler=handler,
-            check_fn=_available,
+            check_fn=(lambda: True) if name == "slack_bot_manifest" else _available,
             description=description,
             emoji="\U0001f465",  # busts in silhouette
         )
     ctx.register_skill(
         "slack-workspace", _SKILL_MD,
         "Answer who is in a Slack channel and which channels Shack can see.",
+    )
+    ctx.register_skill(
+        "slack-bot-manifest", _SKILLS_DIR / "slack-bot-manifest" / "SKILL.md",
+        "Give the author of another bot a safe Slack app manifest and the channel etiquette Shack follows.",
     )
