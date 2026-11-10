@@ -27,7 +27,8 @@ EXTERNAL_BOT_SCOPES: tuple[str, ...] = (
     "im:history",          # read its DMs
     "im:read",             # list its DMs
     "im:write",            # open a DM with someone
-    "mpim:read",           # list group DMs it's in
+    "mpim:history",        # read group DMs someone added it to
+    "mpim:read",           # list group DMs it's in and their members
     "users:read",          # names, titles, timezones (no emails)
 )
 
@@ -38,6 +39,7 @@ EXTERNAL_BOT_EVENTS: tuple[str, ...] = (
     "message.channels",
     "message.groups",
     "message.im",
+    "message.mpim",
 )
 
 # What each blocked scope would have allowed. Shown to the bot's author.
@@ -76,6 +78,7 @@ CAN_DO: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("Read its DMs, reply to them, and start a DM with someone", ("im:history", "im:read", "im:write")),
     ("See which channels and group DMs it's in, and who the members are",
      ("channels:read", "groups:read", "mpim:read")),
+    ("Read and reply in group DMs, but only ones someone added it to", ("mpim:history",)),
     ("See people's names, titles and timezones (not email addresses)", ("users:read",)),
     ("Notice when someone @mentions it", ("app_mentions:read",)),
     ("Read files shared with it and upload files", ("files:read", "files:write")),

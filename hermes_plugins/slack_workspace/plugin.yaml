@@ -14,6 +14,7 @@ provides_tools:
 provides_hooks:
   - pre_gateway_dispatch
   - pre_llm_call
+  - pre_tool_call
 requires_env:
   - name: SLACK_BOT_TOKEN
     description: "Slack bot token (xoxb-...) with channels:read, groups:read, im:read, mpim:read, users:read, chat:write, channels:history, groups:history"

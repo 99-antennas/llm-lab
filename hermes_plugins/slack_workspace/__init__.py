@@ -17,6 +17,7 @@ from pathlib import Path
 
 from .activity import ActivityCache, default_tz, format_digest
 from .etiquette import continues_addressed_exchange
+from . import policy
 from .manifest import ManifestError, manifest_package
 from .workspace import SlackLookupError, SlackWorkspace, sdk_call_factory
 
@@ -79,12 +80,17 @@ def _is_addressed_followup(raw: dict) -> bool:
 
 
 async def _pre_gateway_dispatch(event=None, **_kwargs):
-    """Drop follow-ups in an exchange addressed to someone else (see etiquette.py). Fails open."""
+    """Turn "@Shack help" / "@Shack cool-tools" into the /cool-tools command, and drop follow-ups
+    in an exchange addressed to someone else (see etiquette.py). Fails open."""
     source = getattr(event, "source", None)
     platform = getattr(getattr(source, "platform", None), "value", getattr(source, "platform", ""))
     raw = getattr(event, "raw_message", None)
     if str(platform or "").lower() != "slack" or not isinstance(raw, dict):
         return None
+    if policy.is_tools_request(getattr(event, "text", "") or ""):
+        # Hermes can't give a plugin a native Slack slash command (its listener only covers its own
+        # 50 built-ins), so plain-text asks are rewritten into the command before dispatch.
+        return {"action": "rewrite", "text": "/cool-tools"}
     if _setting("SLACK_IGNORE_OTHER_USER_MENTIONS").lower() not in _TRUE:
         return None
     channel = raw.get("channel") or ""
@@ -132,22 +138,47 @@ def _activity_digest(channel_id: str, current_thread: str, message_ts: str) -> s
     )
 
 
+def _limited_turn(platform: str = "") -> bool:
+    return policy.is_limited(
+        platform or _session_value("HERMES_SESSION_PLATFORM"),
+        _session_value("HERMES_SESSION_USER_ID"), _session_value("HERMES_SESSION_CHAT_ID"),
+        _session_value("HERMES_SESSION_CHAT_TYPE"))
+
+
 def _pre_llm_call(platform=None, **_kwargs):
-    """Give every Slack channel turn a digest of recent activity across the channel's threads.
-    Runs synchronously on the agent's worker thread (``invoke_hook``), not the event loop."""
-    value = getattr(platform, "value", platform) or _session_value("HERMES_SESSION_PLATFORM")
-    if str(value or "").lower() != "slack":
+    """Every Slack turn: the tool-limit hint (when limited) and, in channels, a digest of recent
+    activity across the channel's threads. Runs synchronously on the agent's worker thread
+    (``invoke_hook``), not the event loop."""
+    value = str(getattr(platform, "value", platform) or _session_value("HERMES_SESSION_PLATFORM") or "")
+    if value.lower() != "slack":
         return None
+    parts = [policy.tools_hint()] if _limited_turn(value) else []
     channel_id = _session_value("HERMES_SESSION_CHAT_ID")
-    if not channel_id or channel_id[0] not in "CG":
-        return None  # DMs: nothing to catch up on
-    try:
-        digest = _activity_digest(channel_id, _session_value("HERMES_SESSION_THREAD_ID"),
-                                  _session_value("HERMES_SESSION_MESSAGE_ID"))
-    except Exception as exc:  # noqa: BLE001 - a Slack hiccup must never block a reply
-        logger.warning("slack-workspace: channel activity digest failed: %s", exc)
+    if channel_id and channel_id[0] in "CG":  # DMs: nothing to catch up on
+        try:
+            digest = _activity_digest(channel_id, _session_value("HERMES_SESSION_THREAD_ID"),
+                                      _session_value("HERMES_SESSION_MESSAGE_ID"))
+            if digest:
+                parts.append(digest)
+        except Exception as exc:  # noqa: BLE001 - a Slack hiccup must never block a reply
+            logger.warning("slack-workspace: channel activity digest failed: %s", exc)
+    return {"context": "\n\n".join(parts)} if parts else None
+
+
+def _pre_tool_call(tool_name: str = "", args=None, **_kwargs):
+    """Veto tools outside the Slack safe set (see policy.py)."""
+    if not _limited_turn():
         return None
-    return {"context": digest} if digest else None
+    reason = policy.block_reason(tool_name, args if isinstance(args, dict) else {})
+    if reason:
+        logger.info("slack-workspace: blocked %s on Slack for %s",
+                    tool_name, _session_value("HERMES_SESSION_USER_ID") or "unknown")
+        return {"action": "block", "message": reason}
+    return None
+
+
+def _cool_tools_command(_raw_args: str = "") -> str:
+    return policy.cool_tools_text()
 
 
 def _post_allowlist() -> set[str]:
@@ -352,6 +383,12 @@ def register(ctx) -> None:
         )
     ctx.register_hook("pre_gateway_dispatch", _pre_gateway_dispatch)
     ctx.register_hook("pre_llm_call", _pre_llm_call)
+    ctx.register_hook("pre_tool_call", _pre_tool_call)
+    # Slack's /cool_tools arrives with an underscore; register both spellings so "!cool_tools"
+    # and "!cool-tools" (which work in threads, where Slack rejects slash commands) resolve too.
+    for name in ("cool-tools", "cool_tools"):
+        ctx.register_command(name, _cool_tools_command,
+                             description="Show what Shack can do for you on Slack")
     ctx.register_skill(
         "slack-workspace", _SKILL_MD,
         "Answer who is in a Slack channel and which channels Shack can see.",

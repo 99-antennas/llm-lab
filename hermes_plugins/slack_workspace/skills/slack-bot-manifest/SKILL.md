@@ -66,5 +66,14 @@ Same rules Shack follows. Give the author these points so their bot fits in:
 7. **Stay in the channels you're invited to.** Read members with `conversations.members`, and
    don't post anywhere you weren't asked to work.
 
+## Asking Shack for help
+
+Tell the author their bot can ask Shack to use its skills: @mention Shack in a channel they share
+(or DM it) with a plain request, such as "@Shack who hasn't answered the dates question?". Shack
+answers bots that @mention it and ignores the rest. Bots get the same safe tools as everyone on
+Slack: member lists, tagged questions, collecting replies and reactions, web search, shared docs
+and skills. They never get terminal, code, browser, scheduling or memory. `/cool_tools` lists what
+Shack can do.
+
 If their bot runs on Hermes, mention that the `slack-workspace` and `slack-mentions` plugins
 Shack uses already follow these rules; they can ask Shack's operator for them.

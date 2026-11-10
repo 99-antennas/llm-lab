@@ -102,21 +102,21 @@ def test_hook_injects_digest_for_slack_channels(monkeypatch):
     assert "kas [this thread]: @Ray McLendon see if you can enable this manifest" in out["context"]
     assert plugin._pre_llm_call(platform="telegram") is None
     env["HERMES_SESSION_CHAT_ID"] = "D0DM"
-    assert plugin._pre_llm_call(platform="slack") is None
+    assert "Recent activity" not in plugin._pre_llm_call(platform="slack")["context"]
 
 
 def test_hook_disabled_and_fails_open(monkeypatch):
     monkeypatch.setattr(plugin, "_session_value", lambda name: "C0CF5QW6YM6" if name.endswith("CHAT_ID") else "")
     monkeypatch.setenv("SLACK_ACTIVITY_HOURS", "0")
     monkeypatch.setenv("SLACK_BOT_TOKEN", "xoxb-test")
-    assert plugin._pre_llm_call(platform="slack") is None
+    assert "Recent activity" not in plugin._pre_llm_call(platform="slack")["context"]
     monkeypatch.delenv("SLACK_ACTIVITY_HOURS")
 
     def broken(method, **p):
         raise RuntimeError("down")
     monkeypatch.setattr(plugin, "_workspace", ("xoxb-test", SlackWorkspace(broken)))
     monkeypatch.setattr(plugin, "_activity_cache", ActivityCache())
-    assert plugin._pre_llm_call(platform="slack") is None
+    assert "Recent activity" not in plugin._pre_llm_call(platform="slack")["context"]
 
 
 def test_digest_unescapes_slack_entities_and_bare_links():

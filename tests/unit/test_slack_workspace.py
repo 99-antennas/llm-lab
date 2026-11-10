@@ -205,13 +205,16 @@ def test_list_channels_tool(wired, monkeypatch):
 def test_register_registers_tools_and_skill():
     class Ctx:
         def __init__(self):
-            self.tools, self.skills, self.hooks = {}, {}, {}
+            self.tools, self.skills, self.hooks, self.commands = {}, {}, {}, {}
 
         def register_tool(self, **kw):
             self.tools[kw["name"]] = kw
 
         def register_hook(self, name, callback):
             self.hooks[name] = callback
+
+        def register_command(self, name, handler, description=""):
+            self.commands[name] = handler
 
         def register_skill(self, name, path, description=""):
             assert path.exists()
@@ -225,7 +228,9 @@ def test_register_registers_tools_and_skill():
     assert ctx.tools["slack_post_message"]["schema"]["parameters"]["required"] == ["text"]
     assert all(t["toolset"] == "slack_workspace" for t in ctx.tools.values())
     assert set(ctx.skills) == {"slack-workspace", "slack-bot-manifest"}
-    assert set(ctx.hooks) == {"pre_gateway_dispatch", "pre_llm_call"}
+    assert set(ctx.hooks) == {"pre_gateway_dispatch", "pre_llm_call", "pre_tool_call"}
+    assert "What Shack can do" in ctx.commands["cool-tools"]("")
+    assert ctx.commands["cool_tools"] is ctx.commands["cool-tools"]
 
 
 # -- posting and collecting replies -------------------------------------------------------------
