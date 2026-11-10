@@ -30,6 +30,7 @@ COPY docker/hermes-secrets-init.sh /etc/cont-init.d/014-hermes-google-secrets
 COPY docker/hermes-clear-stale-locks.sh /etc/cont-init.d/016-hermes-clear-stale-locks
 # Bundled (trusted) plugin; enable it in $HERMES_HOME/config.yaml under plugins.enabled.
 COPY hermes_plugins/slack_mentions /opt/hermes/plugins/slack_mentions
+COPY hermes_plugins/slack_workspace /opt/hermes/plugins/slack_workspace
 COPY hermes_scripts/retreat_plan_source.py /opt/hermes-gsm/scripts/retreat_plan_source.py
 COPY docker/hermes-install-scripts.sh /etc/cont-init.d/018-hermes-install-scripts
 RUN chmod 0755 /etc/cont-init.d/014-hermes-google-secrets /etc/cont-init.d/016-hermes-clear-stale-locks \
