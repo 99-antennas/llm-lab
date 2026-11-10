@@ -19,7 +19,6 @@ Prints a line per reminder sent (nothing when there's nothing to do). ``--dry-ru
 from __future__ import annotations
 
 import os
-import re
 import sys
 import time
 from collections.abc import Callable
@@ -27,15 +26,15 @@ from dataclasses import dataclass
 from pathlib import Path
 
 try:  # repo layout (tests)
+    from hermes_plugins.slack_workspace.etiquette import leading_tags, tagged_users
     from hermes_plugins.slack_workspace.workspace import SlackLookupError, SlackWorkspace, sdk_call_factory
 except ImportError:  # Hermes image: the plugin lives in /opt/hermes/plugins/slack_workspace
     sys.path.insert(0, "/opt/hermes/plugins")
+    from slack_workspace.etiquette import leading_tags, tagged_users
     from slack_workspace.workspace import SlackLookupError, SlackWorkspace, sdk_call_factory
 
 HERMES_HOME = Path(os.environ.get("HERMES_HOME", "/opt/data"))
 S6_ENV_DIR = Path("/run/s6/container_environment")
-_LEADING_TAGS_RE = re.compile(r"\s*((?:<@[UW][A-Z0-9]+(?:\|[^>]*)?>[\s,:]*)+)")
-_TAG_RE = re.compile(r"<@([UW][A-Z0-9]+)(?:\|[^>]*)?>")
 # Ordinary messages and thread replies broadcast to the channel; joins, edits, bot posts are skipped.
 _HUMAN_SUBTYPES = {None, "", "thread_broadcast", "file_share"}
 
@@ -47,12 +46,6 @@ class Reminder:
     message_ts: str
     author_id: str
     user_ids: tuple[str, ...]
-
-
-def leading_tags(text: str) -> list[str]:
-    """User IDs tagged at the very start of ``text`` (``<@A> <@B>, can you…`` → ``[A, B]``)."""
-    match = _LEADING_TAGS_RE.match(text or "")
-    return list(dict.fromkeys(_TAG_RE.findall(match.group(1)))) if match else []
 
 
 def _ts(message: dict) -> float:
@@ -96,7 +89,7 @@ def find_overdue(
         for user in tagged:
             responded = (user in reacted
                          or any(m.get("user") == user for m in later_thread + later_top))
-            reminded = any(m.get("user") == own_id and user in _TAG_RE.findall(m.get("text") or "")
+            reminded = any(m.get("user") == own_id and user in tagged_users(m.get("text") or "")
                            for m in later_thread)
             if not responded and not reminded:
                 due.append(user)

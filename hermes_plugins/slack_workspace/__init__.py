@@ -7,15 +7,22 @@ replies to a posted question only work in channels listed in ``SLACK_POST_CHANNE
 
 from __future__ import annotations
 
+import asyncio
 import json
+import logging
 import os
 import threading
+import time
 from pathlib import Path
 
+from .activity import ActivityCache, default_tz, format_digest
+from .etiquette import continues_addressed_exchange
 from .manifest import ManifestError, manifest_package
 from .workspace import SlackLookupError, SlackWorkspace, sdk_call_factory
 
 TOOLSET = "slack_workspace"
+logger = logging.getLogger(__name__)
+_TRUE = {"true", "1", "yes", "on"}
 _SKILLS_DIR = Path(__file__).parent / "skills"
 _SKILL_MD = _SKILLS_DIR / "slack-workspace" / "SKILL.md"
 
@@ -30,6 +37,117 @@ def _token() -> str:
         return (get_secret("SLACK_BOT_TOKEN") or "").strip()
     except ImportError:  # outside Hermes (tests)
         return os.environ.get("SLACK_BOT_TOKEN", "").strip()
+
+
+def _setting(name: str) -> str:
+    try:
+        from agent.secret_scope import get_secret
+
+        return (get_secret(name) or "").strip()
+    except ImportError:  # outside Hermes (tests)
+        return os.environ.get(name, "").strip()
+
+
+def _followup_window_seconds() -> float:
+    try:
+        return float(_setting("SLACK_ADDRESSED_FOLLOWUP_MINUTES") or 10) * 60
+    except ValueError:
+        return 600.0
+
+
+def _earlier_messages(workspace: SlackWorkspace, channel: str, ts: str, thread_ts: str,
+                      window: float) -> list[dict]:
+    """Messages before ``ts`` in the same place (thread or channel top level), newest first."""
+    oldest = f"{float(ts) - window:.6f}"
+    call = workspace._call
+    if thread_ts and thread_ts != ts:
+        messages = call("conversations.replies", channel=channel, ts=thread_ts, oldest=oldest,
+                        latest=ts, inclusive=False, limit=50).get("messages") or []
+    else:
+        messages = call("conversations.history", channel=channel, oldest=oldest, latest=ts,
+                        inclusive=False, limit=20).get("messages") or []
+    earlier = [m for m in messages if float(m.get("ts") or 0) < float(ts)]
+    return sorted(earlier, key=lambda m: float(m.get("ts") or 0), reverse=True)
+
+
+def _is_addressed_followup(raw: dict) -> bool:
+    channel, ts, thread_ts = raw.get("channel") or "", raw.get("ts") or "", raw.get("thread_ts") or ""
+    workspace = _get_workspace()
+    window = _followup_window_seconds()
+    earlier = _earlier_messages(workspace, channel, ts, thread_ts, window)
+    return continues_addressed_exchange(raw, earlier, workspace._own_user_id(), window)
+
+
+async def _pre_gateway_dispatch(event=None, **_kwargs):
+    """Drop follow-ups in an exchange addressed to someone else (see etiquette.py). Fails open."""
+    source = getattr(event, "source", None)
+    platform = getattr(getattr(source, "platform", None), "value", getattr(source, "platform", ""))
+    raw = getattr(event, "raw_message", None)
+    if str(platform or "").lower() != "slack" or not isinstance(raw, dict):
+        return None
+    if _setting("SLACK_IGNORE_OTHER_USER_MENTIONS").lower() not in _TRUE:
+        return None
+    channel = raw.get("channel") or ""
+    if not channel or channel.startswith("D") or not raw.get("ts") or not raw.get("user"):
+        return None  # DMs are always for Shack
+    try:
+        skip = await asyncio.to_thread(_is_addressed_followup, raw)
+    except Exception as exc:  # noqa: BLE001 - never block a message because Slack lookups failed
+        logger.warning("slack-workspace: follow-up check failed, letting message through: %s", exc)
+        return None
+    if skip:
+        return {"action": "skip", "reason": "follow-up in an exchange addressed to someone else"}
+    return None
+
+
+_activity_cache = ActivityCache()
+
+
+def _session_value(name: str) -> str:
+    try:
+        from gateway.session_context import get_session_env
+    except ImportError:
+        return ""
+    return get_session_env(name, "").strip()
+
+
+def _activity_digest(channel_id: str, current_thread: str, message_ts: str) -> str:
+    try:
+        hours = float(_setting("SLACK_ACTIVITY_HOURS") or 24)
+        max_messages = int(_setting("SLACK_ACTIVITY_MAX_MESSAGES") or 60)
+    except ValueError:
+        hours, max_messages = 24.0, 60
+    if hours <= 0 or max_messages <= 0:
+        return ""
+    workspace = _get_workspace()
+    messages = _activity_cache.get(workspace._call, channel_id, hours, time.time())
+    if not messages:
+        return ""
+    directory = workspace._user_directory()
+    channel = workspace.resolve_channel(channel_id)
+    return format_digest(
+        messages, channel.name, workspace._own_user_id(),
+        lambda uid: workspace._user(uid, directory)["name"], default_tz(), hours,
+        current_thread=current_thread, exclude_ts=message_ts, max_messages=max_messages,
+    )
+
+
+def _pre_llm_call(platform=None, **_kwargs):
+    """Give every Slack channel turn a digest of recent activity across the channel's threads.
+    Runs synchronously on the agent's worker thread (``invoke_hook``), not the event loop."""
+    value = getattr(platform, "value", platform) or _session_value("HERMES_SESSION_PLATFORM")
+    if str(value or "").lower() != "slack":
+        return None
+    channel_id = _session_value("HERMES_SESSION_CHAT_ID")
+    if not channel_id or channel_id[0] not in "CG":
+        return None  # DMs: nothing to catch up on
+    try:
+        digest = _activity_digest(channel_id, _session_value("HERMES_SESSION_THREAD_ID"),
+                                  _session_value("HERMES_SESSION_MESSAGE_ID"))
+    except Exception as exc:  # noqa: BLE001 - a Slack hiccup must never block a reply
+        logger.warning("slack-workspace: channel activity digest failed: %s", exc)
+        return None
+    return {"context": digest} if digest else None
 
 
 def _post_allowlist() -> set[str]:
@@ -232,6 +350,8 @@ def register(ctx) -> None:
             description=description,
             emoji="\U0001f465",  # busts in silhouette
         )
+    ctx.register_hook("pre_gateway_dispatch", _pre_gateway_dispatch)
+    ctx.register_hook("pre_llm_call", _pre_llm_call)
     ctx.register_skill(
         "slack-workspace", _SKILL_MD,
         "Answer who is in a Slack channel and which channels Shack can see.",

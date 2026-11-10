@@ -50,7 +50,9 @@ owners; that isn't your call.
 Same rules Shack follows. Give the author these points so their bot fits in:
 
 1. **Messages that start with a tag are for that person.** If a message opens with `@Someone`
-   (someone other than your bot), don't answer it unless your bot is tagged too.
+   (someone other than your bot), don't answer it unless your bot is tagged too. The same goes
+   for the sender's untagged follow-ups and the back-and-forth between them over the next few
+   minutes, until someone tags your bot again.
 2. **Tag people properly.** Use `<@USERID>` (from `users.list` or `conversations.members`) so they
    get notified; plain text `@Name` doesn't notify anyone.
 3. **@channel and @here are for announcements only**, and only when someone asks for them or
