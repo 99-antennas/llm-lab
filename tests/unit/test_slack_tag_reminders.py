@@ -193,3 +193,12 @@ def test_token_prefers_s6_container_env(monkeypatch, tmp_path):
     monkeypatch.delenv("SLACK_BOT_TOKEN", raising=False)
     monkeypatch.setattr(rem, "S6_ENV_DIR", tmp_path)
     assert rem._token() == "xoxb-s6"
+
+
+@pytest.mark.parametrize(("emoji", "counts"), [
+    ("+1", True), ("+1::skin-tone-4", True), ("white_check_mark", True), ("heavy_check_mark", True),
+    ("-1", True), ("x", True), ("eyes", False), ("joy", False),
+])
+def test_only_answer_reactions_count(emoji, counts):
+    top = [msg(KAS, "<@U01RAY> can you book the cabin?", 30, reactions=[{"name": emoji, "users": [RAY]}])]
+    assert (overdue(top) == []) is counts

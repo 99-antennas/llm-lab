@@ -13,6 +13,8 @@ import time
 from collections.abc import Callable
 from datetime import datetime, timezone
 
+from .reactions import summary as reaction_summary
+
 _TAG_RE = re.compile(r"<@([UW][A-Z0-9]+)(?:\|[^>]*)?>")
 _LINK_RE = re.compile(r"<(https?://[^|>]+)\|([^>]+)>")
 _BARE_LINK_RE = re.compile(r"<(https?://[^|>]+)>")
@@ -85,13 +87,16 @@ def format_digest(
                 where = f" [in thread: {topic}]" if topic else " [in a thread]"
         else:
             where = " [this thread's first message]" if m["ts"] == current_thread else ""
-        lines.append(f"- {when} {who}{where}: {_clean(m.get('text') or '', names, per_message_chars)}")
+        reacted = reaction_summary(m, names)
+        lines.append(f"- {when} {who}{where}: {_clean(m.get('text') or '', names, per_message_chars)}"
+                     + (f" (reactions: {reacted})" if reacted else ""))
     if not lines:
         return ""
     header = (f"[Recent activity in #{channel_name} across the channel and all its threads, last "
               f"{hours:g}h, oldest first. It includes messages that weren't for you. Use it as "
               "background so you know what's going on; don't reply to those messages unless "
-              "someone asks.]")
+              "someone asks. A :+1: or :white_check_mark: reaction means yes / agreed / done; :-1: or :x: "
+              "means no.]")
     while lines and len(header) + sum(len(line) + 1 for line in lines) > max_chars:
         lines.pop(0)
     return header + "\n" + "\n".join(lines)

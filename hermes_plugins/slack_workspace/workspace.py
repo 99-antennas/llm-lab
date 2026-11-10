@@ -14,6 +14,10 @@ import time
 from collections.abc import Callable
 from dataclasses import dataclass
 
+from .reactions import answers as reaction_answers
+from .reactions import meaning as reaction_meaning
+from .reactions import summary as reaction_summary
+
 logger = logging.getLogger(__name__)
 
 SlackCall = Callable[..., dict]
@@ -343,8 +347,9 @@ class SlackWorkspace:
         }
 
     def get_replies(self, channel: Channel, ts: str) -> dict:
-        """Answers to the message at ``ts``: thread replies plus later channel messages from the
-        people it tagged. ``waiting_on`` lists tagged people who haven't answered yet."""
+        """Answers to the message at ``ts``: thread replies, later channel messages from the people
+        it tagged, and 👍/✅ (yes) or 👎/❌ (no) reactions on it. ``waiting_on`` lists tagged people
+        who haven't answered yet; other reactions (👀, 😂…) don't count as answers."""
         own_id = self._own_user_id()
         thread = _paginate(self._call, "conversations.replies", "messages", channel=channel.id, ts=ts)
         if not thread:
@@ -375,12 +380,20 @@ class SlackWorkspace:
             answered.add(uid)
             out.append({"user_id": uid, "name": self._user(uid, directory)["name"],
                         "text": msg.get("text") or "", "ts": msg.get("ts"), "where": where})
+        for uid, emoji in reaction_answers(question).items():
+            if uid == own_id:
+                continue
+            answered.add(uid)
+            out.append({"user_id": uid, "name": self._user(uid, directory)["name"],
+                        "reaction": " ".join(f":{e}:" for e in emoji),
+                        "meaning": reaction_meaning(emoji[0]), "where": "reaction"})
         return {
             "channel": channel.to_dict(),
             "question": question_text,
             "broadcast": broadcast or None,
             "asked": [self._user(uid, directory)["name"] for uid in asked],
             "responses": out,
+            "reactions": reaction_summary(question, lambda uid: self._user(uid, directory)["name"]) or None,
             "waiting_on": [self._user(uid, directory)["name"] for uid in asked if uid not in answered],
         }
 

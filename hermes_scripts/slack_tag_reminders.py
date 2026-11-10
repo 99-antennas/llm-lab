@@ -7,7 +7,7 @@ stay out of it. If the person tagged hasn't responded after ``SLACK_REMINDER_AFT
 this posts one reminder in the message's thread, tagging them.
 
 Counts as a response: a later reply by them in that thread, a later top-level message by them in
-the channel, or an emoji reaction by them on the message. Each tag gets at most one reminder:
+the channel, or a 👍/✅ (or 👎/❌) reaction by them on the message; 👀 or 😂 don't count. Each tag gets at most one reminder:
 an earlier Shack message in the thread that tags them counts as the reminder. Messages Shack
 posted itself are skipped (``slack_get_replies`` tracks those). Messages older than
 ``SLACK_REMINDER_LOOKBACK_DAYS`` (3) are never reminded about.
@@ -27,10 +27,12 @@ from pathlib import Path
 
 try:  # repo layout (tests)
     from hermes_plugins.slack_workspace.etiquette import leading_tags, tagged_users
+    from hermes_plugins.slack_workspace.reactions import answers as reaction_answers
     from hermes_plugins.slack_workspace.workspace import SlackLookupError, SlackWorkspace, sdk_call_factory
 except ImportError:  # Hermes image: the plugin lives in /opt/hermes/plugins/slack_workspace
     sys.path.insert(0, "/opt/hermes/plugins")
     from slack_workspace.etiquette import leading_tags, tagged_users
+    from slack_workspace.reactions import answers as reaction_answers
     from slack_workspace.workspace import SlackLookupError, SlackWorkspace, sdk_call_factory
 
 HERMES_HOME = Path(os.environ.get("HERMES_HOME", "/opt/data"))
@@ -84,7 +86,7 @@ def find_overdue(
         thread = threads.get(root, [])
         later_thread = [m for m in thread if _ts(m) > _ts(msg)]
         later_top = [m for m in top_level if _ts(m) > _ts(msg)]
-        reacted = {u for r in msg.get("reactions") or [] for u in r.get("users") or []}
+        reacted = set(reaction_answers(msg))  # 👍/✅/👎/❌ answer; 👀 or 😂 don't
         due = []
         for user in tagged:
             responded = (user in reacted

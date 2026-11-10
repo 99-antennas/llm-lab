@@ -44,6 +44,16 @@ otherwise). Don't try to work around that.
    `waiting_on`. To nudge, reply in the thread with `thread_ts=ts`, tagging only the people in
    `waiting_on`.
 
+### Emoji reactions count as answers
+
+People often answer with a reaction instead of a reply. `slack_get_replies` counts them, and the
+channel activity you see lists them after each message ("reactions: :+1: kas").
+- :+1:, :white_check_mark:, :heavy_check_mark:, :ok_hand: and similar mean **yes / agreed / done**.
+- :-1:, :x: and similar mean **no**.
+- Anything else (:eyes:, :joy:…) isn't an answer. :eyes: usually means "seen, working on it".
+- To make a quick decision easy, end the question with "React :+1: if that works, or reply with
+  changes." Only nudge people who haven't answered with a reply or a yes/no reaction.
+
 ### @channel and @here
 
 `broadcast` is the only way to send @channel or @here. Without it, writing "@channel" or
