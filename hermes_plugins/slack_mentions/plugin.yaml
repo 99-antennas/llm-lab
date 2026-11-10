@@ -1,0 +1,12 @@
+name: slack-mentions
+version: 1.0.0
+description: >
+  Converts the agent's @Name text in Slack replies into real <@UID> mentions so tagged
+  people and bots are notified, and tells the agent which workspace members it can tag.
+author: llm-lab
+provides_hooks:
+  - transform_llm_output
+  - pre_llm_call
+requires_env:
+  - name: SLACK_BOT_TOKEN
+    description: "Slack bot token (xoxb-...) with users:read"

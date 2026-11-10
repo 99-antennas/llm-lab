@@ -1,0 +1,20 @@
+name: slack-workspace
+version: 1.0.0
+description: >
+  Slack workspace tools for Shack via slack_sdk: list channel members and channels, post tagged
+  questions to allowed channels (SLACK_POST_CHANNELS, comma-separated names or IDs; unset = none)
+  and collect the answers. Ships the slack-workspace skill.
+author: llm-lab
+provides_tools:
+  - slack_channel_members
+  - slack_list_channels
+  - slack_post_message
+  - slack_get_replies
+  - slack_bot_manifest
+provides_hooks:
+  - pre_gateway_dispatch
+  - pre_llm_call
+  - pre_tool_call
+requires_env:
+  - name: SLACK_BOT_TOKEN
+    description: "Slack bot token (xoxb-...) with channels:read, groups:read, im:read, mpim:read, users:read, chat:write, channels:history, groups:history"
